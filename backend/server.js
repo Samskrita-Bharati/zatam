@@ -15,7 +15,7 @@ const {
   Filter,
 } = require("firebase-admin/firestore");
 
-const serviceAccount = require("./firestore/zat-am-b7997-firebase-adminsdk-fbsvc-eb6c1e1b0f.json");
+const serviceAccount = require("./firestore/zat-am-b7997-f826e2c7657f.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

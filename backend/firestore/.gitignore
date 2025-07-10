@@ -1,2 +1,17 @@
-# Ignore Firebase service account key
-firebase/serviceAccountKey.json
+# Firebase-specific files
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+.runtimeconfig.json
+
+# Platform-specific Firebase config (choose based on your project)
+google-services.json
+GoogleService-Info.plist
+
+# Node.js dependencies (if applicable)
+node_modules/
+
+# Other common ignores
+.env
+.DS_Store
+*.log
