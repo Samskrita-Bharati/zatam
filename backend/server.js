@@ -15,7 +15,9 @@ const {
   Filter,
 } = require("firebase-admin/firestore");
 
-const serviceAccount = require("./firestore/zat-am-b7997-f826e2c7657f.json");
+const serviceAccount = require("./firestore/zat-am-b7997-bcf191dfbde8.json");
+
+process.env.GOOGLE_APPLICATION_CREDENTIALS; // use this to load Firebase admin SDK
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

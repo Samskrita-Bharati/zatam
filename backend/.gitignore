@@ -1,0 +1,54 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Firebase service account credentials
+firestore/*.json
+*.firebase.json
+
+# Optional OS-specific files
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+build/
+
+# Vite / React dev server files
+.vite/
+*.cache
+.cache/
+
+# IDE settings
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# coverage reports
+coverage/
+
+# local database files
+*.sqlite
+*.db
+
+# misc
+*.tgz
+*.bak
+*.swp
+
+# Git
+.git/
