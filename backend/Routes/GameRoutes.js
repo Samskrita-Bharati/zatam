@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   addNewGame,
   getGames,
+  getGamesByStatus,
   getGameById,
   getGameByCategory,
   filterGames,
@@ -14,6 +15,8 @@ const {
 
 router.post("/addNew", addNewGame);
 router.get("/", getGames);
+router.get("/", getGames);
+router.get("/byStatus", getGamesByStatus);
 router.get("/get/:id", getGameById);
 router.get("/getCatg/:gameCategory", getGameByCategory);
 router.get("/filter/:gameDifficulty", filterGames);

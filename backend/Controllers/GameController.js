@@ -25,12 +25,38 @@ const addNewGame = async (req, res) => {
   }
 };
 
+const getGamesByStatus = async (req, res) => {
+  try {
+    // Query games where isActive == "true"
+    const querySnapshot = await gamesCollection
+      .where("isActive", "==", true)
+      .get();
+
+    // If no documents found
+    if (querySnapshot.empty) {
+      return res.status(400).json({ message: "No games to display" });
+    }
+
+    // Extract data
+    const games = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return res.status(200).json({ games });
+  } catch (err) {
+    console.error("Error fetching games:", err.message);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+
 const getGames = async (req, res) => {
   try {
     const games = await fetchAllGames();
 
     if (!games.length) {
-      return res.status(404).json({ message: "No games to display" });
+      return res.status(400).json({ message: "No games to display" });
     }
 
     return res.status(200).json({ games });
@@ -231,6 +257,7 @@ const getGamesByRating = async (req, res) => {
 module.exports = {
   addNewGame,
   getGames,
+  getGamesByStatus,
   getGameById,
   getGameByCategory,
   filterGames,
