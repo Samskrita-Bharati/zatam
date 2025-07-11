@@ -16,10 +16,12 @@ const addNewGame = async (req, res) => {
     // Using the gameId as the document ID
     await gamesCollection.doc(formattedId).set(game.toFirestore());
 
-    res.status(201).json({ message: "Game added", id: formattedId });
+    return res
+      .status(201)
+      .json({ message: `Game with id: ${formattedId} Sucessfully Added` });
   } catch (err) {
     console.error("Game creation error:", err.message);
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
 
@@ -220,7 +222,6 @@ const getGamesByRating = async (req, res) => {
     });
 
     res.status(200).json({ games });
-
   } catch (err) {
     console.error("Error Fetching Game:", err.message);
     res.status(500).json({ error: err.message });

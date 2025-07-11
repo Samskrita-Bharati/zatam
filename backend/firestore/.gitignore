@@ -1,17 +1,27 @@
-# Firebase-specific files
-.firebase/
+# Node.js dependencies
+/node_modules
+
+# Firebase related files
+.firebaserc  # Unless sharing specific project aliases across a team
 firebase-debug.log
 firebase-debug.*.log
-.runtimeconfig.json
 
-# Platform-specific Firebase config (choose based on your project)
-google-services.json
-GoogleService-Info.plist
-
-# Node.js dependencies (if applicable)
-node_modules/
-
-# Other common ignores
+# Environment variables and sensitive configuration
 .env
+*.env
+*.json # If you have sensitive JSON files not meant for version control,
+       # such as a service account key or other configuration secrets.
+       # Be specific if you only want to ignore certain JSON files, e.g.,
+       # /path/to/my/sensitive.json
+
+# Build output directories
+/build
+/dist
+/public # If this directory is only for Firebase hosting deployment and
+        # generated during build, otherwise, it might be tracked.
+
+# IDE and OS specific files
+.idea/
+.vscode/
 .DS_Store
-*.log
+Thumbs.db
