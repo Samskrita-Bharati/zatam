@@ -46,7 +46,7 @@ const NavigationLinksComponent = () => {
     <div className="flex flex-col items-center justify-center flex-grow mr-20 bg-transparent">
       {/* //navbar buttons */}
       <div className="hidden sm:flex transition-all justify-center">
-        <ul className="flex gap-10 font-serif text-xl tracking-[1.25px] text-gray-950 dark:text-gray-200">
+        <ul className="flex gap-5 font-serif text-xl tracking-[1.25px] text-gray-950 dark:text-gray-200">
           {navLinkList.map((item, index) => (
             <li
               key={index}
