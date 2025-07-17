@@ -7,7 +7,7 @@ import { FcGoogle } from "react-icons/fc";
 const SignUpPage = () => {
   return (
     <div className="min-h-[75vh] w-full flex justify-center items-center">
-      <div className="grid grid-cols-1 md:grid-cols-2 max-w-5xl w-full shadow-lg rounded-lg overflow-hidden border dark:border-gray-300">
+      <div className="grid grid-cols-1 md:grid-cols-2 max-w-5xl w-full shadow-lg rounded-lg overflow-hidden">
         {/* Left: Image */}
         <div className="flex justify-center items-center p-4">
           <img
@@ -20,7 +20,7 @@ const SignUpPage = () => {
 
         {/* Right: Sign-Up Form */}
         <div className="flex flex-col justify-center items-center p-8">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-gray-800 dark:text-white">
+          <h2 className="text-2xl md:text-3xl font-semibold mb-6 text-gray-800 dark:text-white font-serif">
             Sign Up
           </h2>
           <div>
