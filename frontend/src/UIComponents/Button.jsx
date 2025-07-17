@@ -13,7 +13,7 @@ const Button = ({
   return (
     <>
       <button
-        className={`cursor-pointer rounded-xl 
+        className={`cursor-pointer rounded-xl flex justify-center items-center capitalize text-[18px] font-serif tracking-[1.25px] 
     ${buttonWidth} 
     ${buttonHeight} 
     ${darkBackgroundProp} 

@@ -40,7 +40,7 @@ const NavigationLinksComponent = () => {
     },
   ];
 
-  const [activeIndex, setActiveIndex] = useState(0); // Track active index
+  const [activeIndex, setActiveIndex] = useState(null); // Track active index
 
   return (
     <div className="flex flex-col items-center justify-center flex-grow mr-20 bg-transparent">
@@ -68,8 +68,8 @@ const NavigationLinksComponent = () => {
       {/* // mobile buttons */}
       <div className="flex sm:hidden transition-all justify-cente p-2 p-x-2 border-2">
         {navLinkList.map((items, index) => (
-          <div className=" relative group">
-            <Button key={index} icon={items.iconName} margin="mr-10" />
+          <div className=" relative group" key={index}>
+            <Button icon={items.iconName} margin="mr-10" />
             <span className="absolute left-1/2 bottom-1/2 -translate-y-1/4 ml-1 px-2 py-1 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10 italic tracking-[1.75px]">
               {items.linkLabel}
             </span>

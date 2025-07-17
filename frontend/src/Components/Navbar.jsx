@@ -5,10 +5,10 @@ import NavAuthComponent from './NavbarComponents/NavAuthComponent'
 
 const Navbar = () => {
   return (
-    <div className="border-2 flex justify-between pt-4 pb-4 items-center">
+    <div className="flex justify-between pt-4 pb-4 items-center border-2 dark:border-gray-300">
       <div><ZatamLogoComponent/></div>
-      <div className="border-2"><NavigationLinksComponent/></div>
-      <div className="border-2"><NavAuthComponent/></div>
+      <div><NavigationLinksComponent/></div>
+      <div><NavAuthComponent/></div>
     </div>
   );
 }
