@@ -40,7 +40,7 @@ class Game {
     this.gameVersion = gameVersion;
     this.rating = rating;
     this.isActive = isActive;
-    this.timeStamp = Timestamp.now();
+    this.timeStamp = new Date().toISOString();
   }
 
   toFirestore() {
