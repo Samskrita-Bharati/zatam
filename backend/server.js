@@ -1,3 +1,5 @@
+require("dotenv").config(); // load .env first
+
 const express = require("express");
 const cors = require("cors");
 const admin = require("firebase-admin");
@@ -27,7 +29,7 @@ const gameRoutes = require("./Routes/GameRoutes");
 const gameDataRoutes = require("./Routes/GameDataRoutes");
 const analyticsRoutes = require("./Routes/AnalyticsRoutes");
 const leaderBoardRoutes = require("./Routes/LeaderBoardRoutes");
-const userRoutes = require("./Routes/UserRoutes")
+const userRoutes = require("./Routes/UserRoutes");
 const app = express();
 const port = 5000;
 
@@ -38,7 +40,7 @@ app.use("/api/games", gameRoutes);
 app.use("/api/gamesData", gameDataRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/leaderBoard", leaderBoardRoutes);
-app.use('/api/users',userRoutes)
+app.use("/api/users", userRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port: ${port}`);

@@ -1,16 +1,22 @@
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
 const { getFirestore } = require("firebase-admin/firestore");
 const getDateTimeParts = require("../utils/DateTimeService");
 const jwt = require("jsonwebtoken");
-
 
 const db = getFirestore();
 const usersCollection = db.collection("users");
 
 // Function to create JWT
-const createToken = (_id) => {
+const createToken = ({ _id, userName, emailAddress }) => {
   const jwtkey = process.env.JWT_SECRET_KEY;
-  return jwt.sign({ _id }, jwtkey, { expiresIn: "30d" });
+  if (!jwtkey) {
+    throw new Error("JWT_SECRET_KEY is not defined in environment variables");
+  }
+
+  return jwt.sign({ _id, userName, emailAddress }, jwtkey, {
+    expiresIn: "30d",
+  });
 };
 
 const registerNewUser = async (req, res) => {
@@ -43,6 +49,54 @@ const registerNewUser = async (req, res) => {
   }
 };
 
+const logInUser = async (req, res) => {
+  try {
+    const { emailAddress, password } = req.body;
+
+    // Step 1: Query Firestore for the user with this email
+    const querySnapshot = await usersCollection
+      .where("emailAddress", "==", emailAddress)
+      .limit(1)
+      .get();
+
+    if (querySnapshot.empty) {
+      return res.status(400).json({ message: "Email not found" });
+    }
+
+    const doc = querySnapshot.docs[0];
+    const userData = doc.data();
+
+    // Step 2: Check password
+    const isPasswordValid = await bcrypt.compare(password, userData.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Invalid password" });
+    }
+
+    // Step 3: Generate token
+    const token = createToken({
+      _id: doc.id,
+      userName: userData.userName,
+      emailAddress: userData.emailAddress,
+    });
+
+    // // Optionally update lastLogin
+    // await usersCollection.doc(doc.id).update({
+    //   lastLogin: new Date().toISOString(),
+    // });
+
+    return res.status(200).json({
+      message: "Login successful",
+      userId: doc.id,
+      userName: userData.userName,
+      token,
+    });
+  } catch (err) {
+    console.error("Login error:", err);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   registerNewUser,
+  logInUser,
 };
