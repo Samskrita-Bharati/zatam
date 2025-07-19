@@ -75,6 +75,7 @@ const addData = async (req, res) => {
   }
 };
 
+//getting game data after adding userName and game Name for frontend purposes
 const getGameData = async (req, res) => {
   try {
     const gamesData = await fetchGamesDataWithNames();

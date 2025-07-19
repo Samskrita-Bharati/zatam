@@ -19,6 +19,7 @@ const createToken = ({ _id, userName, emailAddress }) => {
   });
 };
 
+// fucntions that checks if the clients preferred user name is available or not
 const checkUserNameAvailability = async (req, res) => {
   try {
     const { userName } = req.params;
@@ -40,7 +41,7 @@ const checkUserNameAvailability = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
-
+// function to sign up new a user using our sign up logic
 const registerNewUser = async (req, res) => {
   try {
     const { formattedId } = getDateTimeParts("U");
@@ -77,6 +78,8 @@ const registerNewUser = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
+
+// function to login a user using our logic
 
 const logInUser = async (req, res) => {
   try {
