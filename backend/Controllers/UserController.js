@@ -79,16 +79,17 @@ const logInUser = async (req, res) => {
       emailAddress: userData.emailAddress,
     });
 
-    // // Optionally update lastLogin
-    // await usersCollection.doc(doc.id).update({
-    //   lastLogin: new Date().toISOString(),
-    // });
+    //update lastLogin
+    await usersCollection.doc(doc.id).update({
+      lastLogin: new Date().toISOString(),
+    });
 
     return res.status(200).json({
       message: "Login successful",
       userId: doc.id,
       userName: userData.userName,
       token,
+      role: userData.role,
     });
   } catch (err) {
     console.error("Login error:", err);

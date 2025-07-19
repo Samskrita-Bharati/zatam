@@ -39,9 +39,10 @@ class GameData {
     userId,
     playTime,
     score,
-    rating,
+    rating = null,
     reviewCount = 0,
     lastPlayedDate,
+    isFavorite,
   }) {
     this.playCount += 1;
     this.totalScreenTime += playTime;
@@ -53,7 +54,7 @@ class GameData {
       (this.averageScore * (this.playCount - 1) + score) / this.playCount;
 
     // Update average rating
-    if (rating !== null && reviewCount > 0) {
+    if (rating !== null && reviewCount > 0 && typeof rating === "number") {
       this.rating =
         (this.rating * this.totalReviews + rating) /
         (this.totalReviews + reviewCount);
@@ -74,15 +75,25 @@ class GameData {
       ];
     }
 
-    // Append to all score sessions
-
-    this.scoreDetails.push({
+    // Conditionally pushing only relevant fields into scoreDetails
+    const scoreEntry = {
       userId,
       score,
       playTime,
-      rating,
       timeStamp: new Date().toISOString(),
-    });
+    };
+
+    if (typeof rating === "number" && !isNaN(rating)) {
+      scoreEntry.rating = rating;
+    }
+
+    if (typeof isFavorite === "true") {
+      scoreEntry.isFavorite = isFavorite;
+      // this.isFavorite = isFavorite; // Optionally track global user preference
+    }
+    // Append to all score sessions
+
+    this.scoreDetails.push(scoreEntry);
 
     this.lastUpdated = new Date().toISOString();
   }
