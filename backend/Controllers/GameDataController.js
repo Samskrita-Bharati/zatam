@@ -9,7 +9,8 @@ const gamesCollection = db.collection("games");
 
 const addData = async (req, res) => {
   try {
-    const { gameId, userId, playTime, score, rating, review } = req.body;
+    const { gameId, userId, playTime, score, rating, review, isFavorite } =
+      req.body;
     // validating required fields
     if (!gameId || !userId || playTime == null || score == null) {
       return res.status(400).json({ message: "Missing Required Fields" });
@@ -43,6 +44,7 @@ const addData = async (req, res) => {
         reviewCount: review || 0,
         lastPlayedDate: new Date().toISOString(),
         userId,
+        isFavorite,
       });
 
       docRef = gamesDataCollection.doc(doc.id); // use existing doc ID
@@ -58,6 +60,7 @@ const addData = async (req, res) => {
         reviewCount: review || 0,
         lastPlayedDate: new Date().toISOString(),
         userId,
+        isFavorite,
       });
 
       docRef = gamesDataCollection.doc(formattedId);

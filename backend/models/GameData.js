@@ -42,7 +42,7 @@ class GameData {
     rating = null,
     reviewCount = 0,
     lastPlayedDate,
-    isFavorite,
+    isFavorite = false,
   }) {
     this.playCount += 1;
     this.totalScreenTime += playTime;
@@ -87,7 +87,7 @@ class GameData {
       scoreEntry.rating = rating;
     }
 
-    if (typeof isFavorite === "true") {
+    if (typeof isFavorite === "boolean") {
       scoreEntry.isFavorite = isFavorite;
       // this.isFavorite = isFavorite; // Optionally track global user preference
     }
