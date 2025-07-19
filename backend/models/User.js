@@ -1,11 +1,13 @@
 const bcrypt = require("bcrypt");
 
+const standadRole = "User";
+
 class User {
   constructor({ userName, emailAddress, hashedPassword, role }) {
-    this.userName = userName.trim().toLowerCase();
+    this.userName = userName.toLowerCase().trim();
     this.emailAddress = emailAddress;
     this.password = hashedPassword;
-    this.role = role;
+    this.role = standadRole;
     this.dateCreated = new Date().toISOString();
   }
 
@@ -26,10 +28,6 @@ class User {
       throw new TypeError(
         "Password must be at least 8 characters and include at least one number, one lowercase, and one uppercase letter"
       );
-    }
-
-    if (!Array.isArray(role)) {
-      throw new TypeError("Role Not Properly Defined");
     }
 
     const salt = await bcrypt.genSalt(10);

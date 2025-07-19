@@ -34,6 +34,7 @@ class GameData {
    * @param {number} params.rating - Rating given by user
    * @param {number} params.reviewCount - How many reviews were added (0 or 1 typically)
    * @param {string} params.lastPlayedDate - ISO timestamp of when played
+   * @param {boolean} params.isFavorite - is the game favorite to the user
    */
   updatePlayStats({
     userId,

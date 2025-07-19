@@ -19,24 +19,53 @@ const createToken = ({ _id, userName, emailAddress }) => {
   });
 };
 
+const checkUserNameAvailability = async (req, res) => {
+  try {
+    const { userName } = req.params;
+    if (!userName) {
+      return res.status(400).json({ message: " UserName is Required" });
+    }
+
+    const normalizedUserName = userName.toLowerCase().trim();
+
+    const existingUserSnapShot = await usersCollection
+      .where("userName", "==", normalizedUserName)
+      .get();
+    if (!existingUserSnapShot.empty) {
+      return res.status(400).json({ message: "User Name not Available" });
+    }
+
+    return res.status(200).json({ message: "User Name Available." });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 const registerNewUser = async (req, res) => {
   try {
     const { formattedId } = getDateTimeParts("U");
     const { userName, emailAddress, password } = req.body;
+
+    const existingUserNameSnapShot = await usersCollection
+      .where("userName", "==", userName.toLowerCase().trim())
+      .get();
+
+    if (!existingUserNameSnapShot.empty) {
+      return res.status(400).json({ message: "User Name Already Taken." });
+    }
 
     const existingUserSnapShot = await usersCollection
       .where("emailAddress", "==", emailAddress)
       .get();
 
     if (!existingUserSnapShot.empty) {
-      return res.status(400).json({ message: "User Already Exists" });
+      return res.status(400).json({ message: "Email Already Registered." });
     }
 
     const newUser = await User.create({
       userName: userName,
       emailAddress: emailAddress,
       password: password,
-      role: ["user"],
     });
 
     await usersCollection.doc(formattedId).set(newUser.toFirestore());
@@ -100,4 +129,5 @@ const logInUser = async (req, res) => {
 module.exports = {
   registerNewUser,
   logInUser,
+  checkUserNameAvailability,
 };
