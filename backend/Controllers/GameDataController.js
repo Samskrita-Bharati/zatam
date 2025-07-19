@@ -11,9 +11,17 @@ const gamesCollection = db.collection("games");
 const addData = async (req, res) => {
   try {
     const { gameId, userId, playTime, score, rating, review } = req.body;
-
+    // validating required fields
     if (!gameId || !userId || playTime == null || score == null) {
       return res.status(400).json({ message: "Missing Required Fields" });
+    }
+    //searching or the games collection to check if the game id exists
+
+    const gameDoc = gamesCollection.doc(gameId).get();
+    console.log(gameDoc);
+
+    if (!(await gameDoc).exists) {
+      return res.status(404).json({ message: "Game Does Not Exist." });
     }
 
     //Searching for an existing gameData document for the given gameId
@@ -80,7 +88,5 @@ const getGameData = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
-
-
 
 module.exports = { addData, getGameData };
