@@ -1,5 +1,4 @@
 const GameData = require("../models/GameData");
-const { fetchAllGames } = require("../Services/GameService");
 const { getFirestore } = require("firebase-admin/firestore");
 const getDateTimeParts = require("../utils/DateTimeService");
 const { fetchGamesDataWithNames } = require("../Services/GameDataServices");
@@ -17,10 +16,9 @@ const addData = async (req, res) => {
     }
     //searching or the games collection to check if the game id exists
 
-    const gameDoc = gamesCollection.doc(gameId).get();
-    console.log(gameDoc);
+    const gameDoc = await gamesCollection.doc(gameId).get();
 
-    if (!(await gameDoc).exists) {
+    if (!gameDoc.exists) {
       return res.status(404).json({ message: "Game Does Not Exist." });
     }
 
