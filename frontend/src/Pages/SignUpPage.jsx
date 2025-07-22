@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import InputBox from "../UIComponents/InputBox";
-import Button from "../UIComponents/Button"
+import Button from "../UIComponents/Button";
 import { FcGoogle } from "react-icons/fc";
 
+import { AuthContext } from "../Context/AuthContext";
 
 const SignUpPage = () => {
+  const {
+    registrationInfo,
+    registerUser,
+    registrationError,
+    isRegisterLoading,
+    updateRegistrationInfo,
+  } = useContext(AuthContext);
   return (
     <div className="min-h-[75vh] w-full flex justify-center items-center">
       <div className="grid grid-cols-1 md:grid-cols-2 max-w-5xl w-full shadow-lg rounded-lg overflow-hidden">
@@ -24,10 +32,42 @@ const SignUpPage = () => {
             Sign Up
           </h2>
           <div>
-            <InputBox label="Display Name" />
-            <InputBox label="Email Address" />
-            <InputBox label="Password" />
-            <InputBox label="Confirm Password" />
+            <InputBox
+              label="Display Name"
+              type="text"
+              name="userName"
+              value={registrationInfo.userName}
+              onChange={(e) =>
+                updateRegistrationInfo({
+                  ...registrationInfo,
+                  userName: e.target.value,
+                })
+              }
+            />
+            <InputBox
+              label="Email Address"
+              type="email"
+              name="emailAddress"
+              value={registrationInfo.emailAddress}
+              onChange={(e) =>
+                updateRegistrationInfo({
+                  ...registrationInfo,
+                  emailAddress: e.target.value,
+                })
+              }
+            />
+            <InputBox
+              label="Password"
+              type="password"
+              name="password"
+              value={registrationInfo.password}
+              onChange={(e) =>
+                updateRegistrationInfo({
+                  ...registrationInfo,
+                  password: e.target.value,
+                })
+              }
+            />
           </div>
 
           <Button
@@ -38,19 +78,25 @@ const SignUpPage = () => {
             buttonLabel="register"
             margin="mt-5 mb-5 text-black"
             hoverProperties="hover:italic hover:text-zinc-600"
+            onClick={() => registerUser()}
           />
           <Button
             buttonWidth="w-56"
             buttonHeight="h-12"
             darkBackgroundProp="dark:bg-zinc-400"
             lightBackgroundProp="bg-zinc-400"
-            buttonLabel="register using"
+            buttonLabel={isRegisterLoading ? "Loading" : "Register"}
             margin=" mb-5 text-black"
             icon={<FcGoogle className="h-8" />}
             hoverProperties="hover:italic hover:text-zinc-600"
           />
         </div>
       </div>
+      {registrationError?.error && (
+        <p className="text-center text-red-500 text-sm mt-2">
+          {registrationError?.message}
+        </p>
+      )}
     </div>
   );
 };

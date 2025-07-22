@@ -7,12 +7,14 @@ const Button = ({
   darkBackgroundProp = "",
   hoverProperties = "",
   icon = null,
-    lightBackgroundProp = "",
-  margin=""
+  lightBackgroundProp = "",
+  margin = "",
+  onClick,
 }) => {
   return (
     <>
       <button
+        onClick={onClick}
         className={`cursor-pointer rounded-xl flex justify-center items-center capitalize text-[18px] font-serif tracking-[1.25px] 
     ${buttonWidth} 
     ${buttonHeight} 

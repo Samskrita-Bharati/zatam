@@ -4,6 +4,7 @@ const InputBox = ({
   type = "text",
   width = "w-80",
   height = "h-12",
+  margin="m-5",
   onChange = () => { },
   value = "",
   step = "",
@@ -21,12 +22,12 @@ const InputBox = ({
         step={step}
         required={ required}
         className={`
-          peer block w-full appearance-none border-2
-          border-gray-950 dark:border-gray-400
+          peer block w-full appearance-none border-2 justify-center
+          border-gray-950 dark:border-gray-400 text-amber-300
           rounded-md px-3 pt-5 pb-1 text-sm
           placeholder-transparent focus:outline-none focus:ring-2
           focus:ring-zinc-500 dark:focus:ring-xinc-500
-          ${height} ${step} ${required} text-center shadow shadow-gray-300
+          ${height} ${step} ${required} ${margin} text-center shadow shadow-gray-300
           font-serif tracking-[.13em]  text-black dark:text-white
         `}
       />
