@@ -6,6 +6,7 @@ const { fetchGamesDataWithNames } = require("../Services/GameDataServices");
 const db = getFirestore();
 const gamesDataCollection = db.collection("gamesdata");
 const gamesCollection = db.collection("games");
+const usersCollection = db.collection("users");
 
 const addData = async (req, res) => {
   try {
@@ -20,7 +21,13 @@ const addData = async (req, res) => {
     const gameDoc = await gamesCollection.doc(gameId).get();
 
     if (!gameDoc.exists) {
-      return res.status(404).json({ message: "Game Does Not Exist." });
+      return res.status(404).json({ message: "Invalid Game" });
+    }
+
+    const userDoc = await usersCollection.doc(userId).get();
+
+    if (!userDoc.exists) {
+      return res.status(404).json({ message: "Invalid User" });
     }
 
     //Searching for an existing gameData document for the given gameId
