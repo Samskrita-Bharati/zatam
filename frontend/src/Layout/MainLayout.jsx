@@ -34,7 +34,7 @@ const MainLayout = () => {
   return (
     <div
       className={`relative  overflow-x-hidden ${
-        !isDark ? "bg-gary-50" : ""
+        !isDark ? "bg-gray-50" : ""
       }`}
     >
       {isDark && <DarkBackground />}

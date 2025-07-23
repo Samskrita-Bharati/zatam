@@ -1,4 +1,3 @@
-import React from 'react'
 import ZatamLogoComponent from './NavbarComponents/ZatamLogoComponent'
 import NavigationLinksComponent from "./NavbarComponents/NavigationLinksComponent"
 import NavAuthComponent from './NavbarComponents/NavAuthComponent'

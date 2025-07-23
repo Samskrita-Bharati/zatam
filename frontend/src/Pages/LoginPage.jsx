@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import InputBox from "../UIComponents/InputBox";
 import Button from "../UIComponents/Button";
 import { FcGoogle } from "react-icons/fc";
 import { NavLink } from "react-router-dom";
+import { AuthContext } from "../Context/AuthContext";
 
 const LoginPage = () => {
+  const { loginUser, updateLogInInfo, loginError, isLoginLoading, loginInfo } =
+    useContext(AuthContext);
+
   return (
     <div className="min-h-[75vh] w-full flex justify-center items-center">
       <div className="grid grid-cols-1 md:grid-cols-2 max-w-5xl w-full shadow-lg rounded-lg overflow-hidden">
@@ -24,19 +28,41 @@ const LoginPage = () => {
             Login
           </h2>
           <div>
-            <InputBox label="Email Address" />
-            <InputBox label="Password" />
+            <InputBox
+              label="Email Address"
+              type="email"
+              name="emailAddress"
+              onChange={(e) =>
+                updateLogInInfo({ ...loginInfo, emailAddress: e.target.value })
+              }
+              value={loginInfo.emailAddress}
+            />
+            <InputBox
+              label="Password"
+              type="password"
+              name="password"
+              value={loginInfo.password}
+              onChange={(e) => {
+                updateLogInInfo({ ...loginInfo, password: e.target.value });
+              }}
+            />
           </div>
-
           <Button
             buttonWidth="w-36"
             buttonHeight="h-12"
             darkBackgroundProp="dark:bg-zinc-400"
             lightBackgroundProp="bg-zinc-400"
-            buttonLabel="Login"
+            buttonLabel={isLoginLoading ? "Getting You In" : "login"}
             margin="mt-5 mb-5 text-black"
             hoverProperties="hover:italic hover:text-zinc-600"
+            onClick={() => loginUser()}
           />
+
+          {loginError?.error && (
+            <span className="text-red-400">
+              <p>{loginError?.message}</p>
+            </span>
+          )}
           <Button
             buttonWidth="w-56"
             buttonHeight="h-12"
