@@ -2,13 +2,15 @@ import React, { useContext, useEffect, useState } from "react";
 import InputBox from "../UIComponents/InputBox";
 import Button from "../UIComponents/Button";
 import { FcGoogle } from "react-icons/fc";
-
 import { AuthContext } from "../Context/AuthContext";
 import { baseUrl, getRequest } from "../Services/UserService";
+import { useNavigate } from "react-router-dom";
 
 const SignUpPage = () => {
   const [isUserNameTaken, setisUserNameTaken] = useState(false);
   const [checkingUserName, setCheckingUserName] = useState(false);
+
+  const navigate = useNavigate();
 
   const {
     registrationInfo,
@@ -20,8 +22,22 @@ const SignUpPage = () => {
 
   const { userName, emailAddress, password } = registrationInfo;
   const handleRegistration = () => {
-    if (!userName || !emailAddress || !password) {
-      alert("Please fill in all Fields");
+    if (!userName || typeof userName !== "string") {
+      alert("UserName is Required");
+      return;
+    } else if (
+      !emailAddress ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailAddress)
+    ) {
+      alert("Invalid Email Address");
+      return;
+    } else if (
+      !password ||
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+        password
+      )
+    ) {
+      alert("Password is Required");
       return;
     }
     if (isUserNameTaken) {
@@ -29,6 +45,7 @@ const SignUpPage = () => {
       return;
     }
     registerUser();
+    navigate("/login");
   };
   useEffect(() => {
     const controller = new AbortController();

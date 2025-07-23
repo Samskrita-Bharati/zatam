@@ -13,6 +13,9 @@ const NavAuthComponent = () => {
 
   return (
     <div className="flex mr-2 p-2">
+      {user && (
+        <span className="flex items-center font-serif">{user.userName}</span>
+      )}
       <ul className="flex flex-col gap-3 font-serif">
         {!user && (
           <>

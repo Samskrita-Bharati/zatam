@@ -4,10 +4,30 @@ import Button from "../UIComponents/Button";
 import { FcGoogle } from "react-icons/fc";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const { loginUser, updateLogInInfo, loginError, isLoginLoading, loginInfo } =
     useContext(AuthContext);
+
+  const { emailAddress, password } = loginInfo;
+
+  const handleLogin = () => {
+    if (!emailAddress || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailAddress)) {
+      alert("Invalid Email Address");
+      return;
+    } else if (
+      !password ||
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+        .test
+    ) {
+      alert("Invalid Password");
+    }
+
+    loginUser();
+    navigate("/test");
+  };
 
   return (
     <div className="min-h-[75vh] w-full flex justify-center items-center">
@@ -55,7 +75,7 @@ const LoginPage = () => {
             buttonLabel={isLoginLoading ? "Getting You In" : "login"}
             margin="mt-5 mb-5 text-black"
             hoverProperties="hover:italic hover:text-zinc-600"
-            onClick={() => loginUser()}
+            onClick={handleLogin}
           />
 
           {loginError?.error && (
