@@ -10,6 +10,17 @@ const User = require("../models/User");
 const db = getFirestore();
 const usersCollection = db.collection("users");
 
+const createToken = ({ _id, userName, emailAddress }) => {
+  const jwtkey = process.env.JWT_SECRET_KEY;
+  if (!jwtkey) {
+    throw new Error("JWT_SECRET_KEY is not defined in environment variables");
+  }
+
+  return jwt.sign({ _id, userName, emailAddress }, jwtkey, {
+    expiresIn: "30d",
+  });
+};
+
 const logInUsingGoogle = async (req, res) => {
   try {
     const { formattedId } = getDateTimeParts("U");
