@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useState } from "react";
 import { baseUrl, postRequest } from "../Services/UserService";
+import { googleSignIn } from "../Services/GoogleServices";
 
 export const AuthContext = createContext();
 
@@ -37,7 +38,7 @@ export const AuthContextProvider = ({ children }) => {
       setRegistrationError(null);
       try {
         const response = await postRequest(
-          `${baseUrl}/users/register`,
+          `${baseUrl}/api/users/register`,
           JSON.stringify(registrationInfo)
         );
 
@@ -72,7 +73,7 @@ export const AuthContextProvider = ({ children }) => {
       setLogInError(null);
 
       const response = await postRequest(
-        `${baseUrl}/users/login`,
+        `${baseUrl}/api/users/login`,
         JSON.stringify(loginInfo)
       );
 
@@ -89,7 +90,6 @@ export const AuthContextProvider = ({ children }) => {
         emailAddress: "",
         password: "",
       });
-      
     },
     [loginInfo]
   );
@@ -98,6 +98,10 @@ export const AuthContextProvider = ({ children }) => {
     localStorage.removeItem("User");
     setUser(null);
   }, []);
+
+  const googleLogin = () => {
+    googleSignIn(setUser);
+  };
 
   return (
     <AuthContext.Provider
@@ -114,6 +118,7 @@ export const AuthContextProvider = ({ children }) => {
         isLoginLoading,
         loginInfo,
         logOutUser,
+        googleLogin,
       }}
     >
       {children}

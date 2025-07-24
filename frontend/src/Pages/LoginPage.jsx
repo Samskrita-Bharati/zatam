@@ -5,12 +5,17 @@ import { FcGoogle } from "react-icons/fc";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { googleSignIn } from "../Services/GoogleServices";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { loginUser, updateLogInInfo, loginError, isLoginLoading, loginInfo } =
-    useContext(AuthContext);
+  const {
+    loginUser,
+    updateLogInInfo,
+    loginError,
+    isLoginLoading,
+    loginInfo,
+    googleLogin,
+  } = useContext(AuthContext);
 
   const { emailAddress, password } = loginInfo;
 
@@ -27,6 +32,12 @@ const LoginPage = () => {
     }
 
     loginUser();
+    navigate("/test");
+  };
+
+  const handleGoogleSignIn = () => {
+    googleLogin();
+
     navigate("/test");
   };
 
@@ -93,7 +104,7 @@ const LoginPage = () => {
             margin=" mb-5 text-black"
             icon={<FcGoogle className="h-8" />}
             hoverProperties="hover:italic hover:text-zinc-600"
-            onClick={() => googleSignIn()}
+            onClick={handleGoogleSignIn}
           />
         </div>
         <h3 className="flex justify-center mb-5 font-serif tracking-[1.25px] italic">
