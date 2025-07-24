@@ -28,6 +28,7 @@ export const googleSignIn = async (setUser) => {
       },
       body: JSON.stringify(registrationInfo),
     });
+    localStorage.setItem("User", JSON.stringify(registrationInfo));
 
     const data = await res.json();
 
@@ -39,10 +40,7 @@ export const googleSignIn = async (setUser) => {
     });
 
     // Optionally persist in localStorage
-    localStorage.setItem("userId", data.userId);
-    localStorage.setItem("userName", data.userName);
-    localStorage.setItem("userToken", data.authToken);
-    localStorage.setItem("role", data.role);
+    localStorage.setItem("User", JSON.stringify(data));
   } catch (err) {
     console.error("Google Sign-in failed:", err);
   }
