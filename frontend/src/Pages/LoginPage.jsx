@@ -1,4 +1,4 @@
-import React, { useContext,useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import InputBox from "../UIComponents/InputBox";
 import Button from "../UIComponents/Button";
 import { FcGoogle } from "react-icons/fc";
@@ -20,7 +20,7 @@ const LoginPage = () => {
 
   const { emailAddress, password } = loginInfo;
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     if (!emailAddress || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailAddress)) {
       toast.warning("Invalid Email Address");
       return;
@@ -29,18 +29,19 @@ const LoginPage = () => {
       !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
         .test
     ) {
-     toast.warning("Invalid Password");
-      return
+      toast.warning("Invalid Password");
+      return;
     }
 
     try {
       const response = await loginUser(); // Assuming this returns a response object
 
       if (response.error) {
+        toast.error(response.message || "Registration failed");
         return;
       }
 
-      navigate("/login");
+      navigate("/test");
     } catch (error) {
       console.error(error);
     }
@@ -57,7 +58,6 @@ const LoginPage = () => {
       toast.error(loginError.message);
     }
   }, [loginError]);
-
 
   return (
     <div className="min-h-[75vh] w-full flex justify-center items-center">
