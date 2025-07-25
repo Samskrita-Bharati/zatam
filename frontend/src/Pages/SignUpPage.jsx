@@ -1,15 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import InputBox from "../UIComponents/InputBox";
 import Button from "../UIComponents/Button";
 import { FcGoogle } from "react-icons/fc";
 import { AuthContext } from "../Context/AuthContext";
-import { baseUrl, getRequest } from "../Services/UserService";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const SignUpPage = () => {
-  const [isUserNameTaken, setisUserNameTaken] = useState(false);
-  const [checkingUserName, setCheckingUserName] = useState(false);
-
   const navigate = useNavigate();
 
   const {
@@ -21,15 +18,15 @@ const SignUpPage = () => {
   } = useContext(AuthContext);
 
   const { userName, emailAddress, password } = registrationInfo;
-  const handleRegistration = () => {
+  const handleRegistration = async () => {
     if (!userName || typeof userName !== "string") {
-      alert("UserName is Required");
+      toast.warning("UserName is Required");
       return;
     } else if (
       !emailAddress ||
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailAddress)
     ) {
-      alert("Invalid Email Address");
+      toast.warning("Email is Required");
       return;
     } else if (
       !password ||
@@ -37,52 +34,41 @@ const SignUpPage = () => {
         password
       )
     ) {
-      alert("Password is Required");
+      toast.warning(
+        "Password must be at least 8 characters and include at least one number, one lowercase, and one uppercase letter"
+      );
       return;
     }
-    if (isUserNameTaken) {
-      alert("User Name already Taken");
-      return;
-    }
-    registerUser();
-    navigate("/login");
-  };
-  useEffect(() => {
-    const controller = new AbortController();
 
-    const checkUserName = async () => {
-      const userName = registrationInfo.userName;
-      if (!userName || userName.length < 3) {
-        setisUserNameTaken(false);
+    try {
+      const response = await registerUser(); // Assuming this returns a response object
+
+      console.log("Response", response);
+
+      if (response.error) {
+        toast.error(response.message || "Registration failed");
         return;
       }
-      setCheckingUserName(true);
-      try {
-        const response = await getRequest(
-          `${baseUrl}/users/chk-userName/${userName}`
-        );
-        if (response.exists) {
-          setisUserNameTaken(true);
-        } else {
-          setisUserNameTaken(false);
-        }
-      } catch (err) {
-        if (err.name != "AbortError") {
-          console.error("User Name Check Failed:", err);
-        }
-      }
-    };
-    checkUserName();
 
-    return () => controller.abort(); // Clean up on unmount or username change
-  }, [registrationInfo.userName]);
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (registrationError?.message) {
+      toast.error(registrationError.message);
+    }
+  }, [registrationError]);
+
   return (
     <div className="min-h-[75vh] w-full flex justify-center items-center">
       <div className="grid grid-cols-1 md:grid-cols-2 max-w-5xl w-full shadow-lg rounded-lg overflow-hidden">
         {/* Left: Image */}
         <div className="flex justify-center items-center p-4">
           <img
-            onClick={() => console.log("Hello")}
+            onClick={() => toast.success("Hello")}
             src="/data/images/lordganesha.png"
             alt="Sign Up"
             className="w-56 h-64 md:w-96 md:h-96 object-contain"
@@ -104,8 +90,7 @@ const SignUpPage = () => {
                 updateRegistrationInfo({
                   ...registrationInfo,
                   userName: e.target.value,
-                }),
-                  console.log("Can i have multiple events");
+                });
               }}
             />
             <InputBox
@@ -144,23 +129,8 @@ const SignUpPage = () => {
             hoverProperties="hover:italic hover:text-zinc-600"
             onClick={handleRegistration}
           />
-          <Button
-            buttonWidth="w-56"
-            buttonHeight="h-12"
-            darkBackgroundProp="dark:bg-zinc-400"
-            lightBackgroundProp="bg-zinc-400"
-            buttonLabel="Register with"
-            margin=" mb-5 text-black"
-            icon={<FcGoogle className="h-8" />}
-            hoverProperties="hover:italic hover:text-zinc-600"
-          />
         </div>
       </div>
-      {registrationError?.error && (
-        <p className="text-center text-red-500 text-sm mt-2">
-          {registrationError?.message}
-        </p>
-      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useState } from "react";
 import { baseUrl, postRequest } from "../Services/UserService";
 import { googleSignIn } from "../Services/GoogleServices";
+import { toast } from "react-toastify";
 
 export const AuthContext = createContext();
 
@@ -49,16 +50,19 @@ export const AuthContextProvider = ({ children }) => {
         } else {
           localStorage.setItem("User", JSON.stringify(response));
           setUser(response);
+          toast.success("");
           setRegistationInfo({
             name: "",
             email: "",
             password: "",
           });
+          return response;
         }
       } catch (err) {
         setIsRegisterLoading(false);
         setRegistrationError(null);
         console.error("Registration Error", err);
+        return { error: true, message: "Unexpected error occurred" };
       }
     },
     [registrationInfo]
@@ -77,19 +81,21 @@ export const AuthContextProvider = ({ children }) => {
         JSON.stringify(loginInfo)
       );
 
-      console.log("Response", response);
-
       setIsLogInLoading(false);
       if (response.error) {
+        toast.error(response.message);
         return setLogInError(response);
       }
 
       localStorage.setItem("User", JSON.stringify(response));
       setUser(response);
+      const userName = response.userName;
+      toast.success(`Login Successful!\nWelcome ${userName}`);
       setLogInInfo({
         emailAddress: "",
         password: "",
       });
+      return response;
     },
     [loginInfo]
   );

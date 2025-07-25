@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext,useEffect } from "react";
 import InputBox from "../UIComponents/InputBox";
 import Button from "../UIComponents/Button";
 import { FcGoogle } from "react-icons/fc";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -19,20 +20,30 @@ const LoginPage = () => {
 
   const { emailAddress, password } = loginInfo;
 
-  const handleLogin = () => {
+  const handleLogin = async() => {
     if (!emailAddress || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailAddress)) {
-      alert("Invalid Email Address");
+      toast.warning("Invalid Email Address");
       return;
     } else if (
       !password ||
       !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
         .test
     ) {
-      alert("Invalid Password");
+     toast.warning("Invalid Password");
+      return
     }
 
-    loginUser();
-    navigate("/test");
+    try {
+      const response = await loginUser(); // Assuming this returns a response object
+
+      if (response.error) {
+        return;
+      }
+
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleGoogleSignIn = () => {
@@ -40,6 +51,13 @@ const LoginPage = () => {
 
     navigate("/test");
   };
+
+  useEffect(() => {
+    if (loginError?.message) {
+      toast.error(loginError.message);
+    }
+  }, [loginError]);
+
 
   return (
     <div className="min-h-[75vh] w-full flex justify-center items-center">
@@ -89,12 +107,6 @@ const LoginPage = () => {
             hoverProperties="hover:italic hover:text-zinc-600"
             onClick={handleLogin}
           />
-
-          {loginError?.error && (
-            <span className="text-red-400">
-              <p>{loginError?.message}</p>
-            </span>
-          )}
           <Button
             buttonWidth="w-56"
             buttonHeight="h-12"
