@@ -1,0 +1,131 @@
+                                    "USER AUTHENTICATION (Signup/Login)"
+
+API Name: Signup
+API URL: http://localhost:5000/api/users/register
+HTTP Method: POST
+API Description: 
+This API creates a new user account in the database. The process follows these steps:
+1. Validates that all required inputs (userName, emailAddress, password) are not null.
+2. Checks if the userName already exists; if yes, returns a response indicating "Username already exists".
+3. Checks if the emailAddress already exists; if yes, returns a response indicating "Email already exists".
+4. Validates the password to ensure it meets the following criteria:
+    - Minimum 8 characters
+    - At least one uppercase letter
+    - At least one special character
+    - At least one number
+5. Hashes and salts the password using bcrypt for secure storage once validation passes.
+6. Assigns a default role of "User" to the new account.
+7. Adds a dateCreated field with the current date and time.
+8.  Saves all the information to the users collection with userName stored as entered by user to toLowerCase. 
+9. Upon successful registration a success message is sent.
+Request:
+The request must be sent in JSON format with the following fields:
+    - userName (string): The desired username for the new account.
+    - emailAddress (string): The email address associated with the account.
+    - password (string): The password for the account, which should meet security requirements.
+Request Body:
+{
+  "userName": "xxx",
+  "emailAddress": "xxxx",
+  "password": "xxxx"
+}
+
+Response:
+On successful registration, the API responds with a 201 Created status and a JSON object containing a message.
+    - Status Code: 201
+    - Content-Type: application/json
+Response Body:
+{
+    "message": "User with Id: U_20250728_125849_119_852 Successfully Added"
+}
+
+Response Codes:
+400 Bad Request – Validation failed. Possible messages:
+    - "All fields are required"
+    - "User already exists"
+    - "Email already registered"
+201 Created – "Success message" (User registered successfully)
+500 Internal Server Error – "Error message" (Unexpected server error)
+
+API Name: Login
+API URL: http://localhost:5000/api/users/login
+HTTP Method: POST
+API Description:
+This API allows users to log in using their email address and password. The process follows these steps:
+1. Validates that all required inputs (emailAddress, password) are not null.
+2. Checks if the provided emailAddress exists in the database.
+3. If the email exists, uses bcrypt to compare the input password with the stored hashed password.
+4. If validation passes, generates a JWT token containing the userId, userName, and emailAddress with a 30-day expiration period. This token is used for authentication and automatically logs the user out when expired.
+5. Updates the user’s lastLogin field with the current date and time.
+6. Returns the user credentials and token with a 200 OK status code upon successful login.
+Request Body:
+{
+  "emailAddress": "xxxx",
+  "password": "xxxx"
+}
+Response:
+Upon a successful login, the server responds with a JSON object containing the following fields:
+    - message (string): A message indicating the result of the login attempt.
+    - userId (string): The unique identifier of the logged-in user.
+    - userName (string): The name of the user.
+    - token (string): The authentication token for the session.
+    - role (string): The role of the user within the system.
+Response Body:
+{
+  "message": "",
+  "userId": "",
+  "userName": "",
+  "token": "",
+  "role": ""
+}
+
+Response Codes:
+400 Bad Request – Validation failed. Possible messages:
+    - "All fields are required"
+    - "Email Not Found"
+    - "Invalid Password"
+201 Created – "Success message" (Login successful)
+500 Internal Server Error – "Error message" (Unexpected server error)
+
+API Name: Google Login
+API URL: http://localhost:5000/api/g-auth/google-login
+HTTP Method: POST
+API Description:
+•	The frontend authenticates the user with Google and sends the tokenId and user credentials to the API.
+•	The API verifies the tokenId with Google and checks if a user with the same email exists. If the user exists, their credentials are returned to the frontend for login. If not, a new user account is created, and the credentials are returned for login.
+•	The System Updates the User Last logged in to current date and time.
+
+Request:
+The request body should be in JSON format and must contain the following parameters:
+•	userName (string): The username of the user attempting to log in.
+•	emailAddress (string): The email address associated with the user's Google account.
+•	password (string): The password for the user's Google account.
+•	token (string): The Google authentication token received from the Google sign-in process.
+Request Body:
+{
+"userName":"xxxxx",
+"emailAddress":"xxxx",
+"password":"xxxx",
+"token":"xxxxx"
+
+}
+
+Response:
+Upon successful authentication, the API returns the following JSON:
+Fields:
+•	message (string): Status message (e.g., success or error).
+•	userId (string): Unique identifier for the user.
+•	userName (string): The logged-in user's name.
+•	token (string): JWT authentication token.
+•	role (string): The user role assigned in the system.
+Response Body:
+
+{
+    "message": "Login successful",
+    "userId": "U_20250728_125849_119_852",
+    "userName": "xxx",
+    "token": “JWT Token ",
+    "role": "xxx"
+}
+
+

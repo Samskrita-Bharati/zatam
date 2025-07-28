@@ -19,33 +19,16 @@ const createToken = ({ _id, userName, emailAddress }) => {
   });
 };
 
-// fucntions that checks if the clients preferred user name is available or not
-const checkUserNameAvailability = async (req, res) => {
-  try {
-    const { userName } = req.params;
-    if (!userName) {
-      return res.status(400).json({ message: " UserName is Required" });
-    }
 
-    const normalizedUserName = userName.toLowerCase().trim();
-
-    const existingUserSnapShot = await usersCollection
-      .where("userName", "==", normalizedUserName)
-      .get();
-    if (!existingUserSnapShot.empty) {
-      return res.status(400).json({ message: "User Name not Available" });
-    }
-
-    return res.status(200).json({ message: "User Name Available." });
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
-};
 // function to sign up new a user using our sign up logic
 const registerNewUser = async (req, res) => {
   try {
     const { formattedId } = getDateTimeParts("U");
     const { userName, emailAddress, password } = req.body;
+
+    if (!userName || !emailAddress || !password) {
+      return res.status(404).json({ message: "All Fields are Required." });
+    }
 
     const existingUserNameSnapShot = await usersCollection
       .where("userName", "==", userName.toLowerCase().trim())
@@ -85,9 +68,13 @@ const logInUser = async (req, res) => {
   try {
     const { emailAddress, password } = req.body;
 
+    if (!userName || !password) {
+      return res.status(400).json({ message: "All Fields are Required" });
+    }
+
     // Step 1: Query Firestore for the user with this email
     const querySnapshot = await usersCollection
-      .where("emailAddress", "==", emailAddress)
+      .where("emailAddress", "==", emailAddress.toLowerCase().trim())
       .limit(1)
       .get();
 
@@ -132,5 +119,5 @@ const logInUser = async (req, res) => {
 module.exports = {
   registerNewUser,
   logInUser,
-  checkUserNameAvailability,
+  
 };
