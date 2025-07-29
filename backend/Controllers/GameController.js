@@ -21,7 +21,7 @@ const addNewGame = async (req, res) => {
       .json({ message: `Game with id: ${formattedId} Sucessfully Added` });
   } catch (err) {
     console.error("Game creation error:", err.message);
-    return res.status(400).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 

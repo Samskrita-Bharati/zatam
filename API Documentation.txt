@@ -40,6 +40,10 @@ Response Body:
 }
 
 Response Codes:
+throw new Type error – all fields are not filled. Possible messages:
+    - "Invalid User Name"
+    - "Invalid Email Address"
+    - "Password must be at least 8 characters and include at least one number, one lowercase, and one uppercase letter"
 400 Bad Request – Validation failed. Possible messages:
     - "All fields are required"
     - "User already exists"
@@ -91,16 +95,16 @@ API Name: Google Login
 API URL: http://localhost:5000/api/g-auth/google-login
 HTTP Method: POST
 API Description:
-•	The frontend authenticates the user with Google and sends the tokenId and user credentials to the API.
-•	The API verifies the tokenId with Google and checks if a user with the same email exists. If the user exists, their credentials are returned to the frontend for login. If not, a new user account is created, and the credentials are returned for login.
-•	The System Updates the User Last logged in to current date and time.
+    - The frontend authenticates the user with Google and sends the tokenId and user credentials to the API.
+    - The API verifies the tokenId with Google and checks if a user with the same email exists. If the user exists, their credentials are returned to the frontend for login. If not, a new user account is created, and the credentials are returned for login.
+    - The System Updates the User Last logged in to current date and time.
 
 Request:
 The request body should be in JSON format and must contain the following parameters:
-•	userName (string): The username of the user attempting to log in.
-•	emailAddress (string): The email address associated with the user's Google account.
-•	password (string): The password for the user's Google account.
-•	token (string): The Google authentication token received from the Google sign-in process.
+    - userName (string): The username of the user attempting to log in.
+    - emailAddress (string): The email address associated with the user's Google account.
+    - password (string): The password for the user's Google account.
+    - token (string): The Google authentication token received from the Google sign-in process.
 Request Body:
 {
 "userName":"xxxxx",
@@ -127,5 +131,85 @@ Response Body:
     "token": “JWT Token ",
     "role": "xxx"
 }
+
+                                                                "Games (Adding/editing/updating active status)"
+
+API Name: Add New Games
+API URL : http://localhost:5000/api/games/addNew
+HTTP Method : POST
+API Description:
+This endpoint allows users to add a new game to the database. It accepts a JSON payload containing various details about the game.
+    - Validates all the fields are not null.
+    - creates a unique id 
+    - Adds a time stamp of the date and time the game was added.
+Request:
+The request body must be in JSON format and include the following parameters:
+    - gameName (string): The name of the game.
+    - gameCategory (array of strings): 
+        *   Categories associated with the game. This field supports multiple values.
+        *   Example: A game that is both recreational and educational can be stored as: "gameCategory": ["RG", "ET"]
+        *   The frontend can implement functionality to accept multiple categories and define its own category codes or names.
+    - gameImage (string): 
+        *   The path to the game's image. 
+        *   The following is the game link for the demo point and shoot game
+             "https://raw.githubusercontent.com/Samskrita-Bharati/Zatam-Web-Images-Repo/main/point%26shoot_game.jpg"
+        
+    - gameLink (string): 
+        *   A URL link to the game, which can he hosted any where as this application is designed to get all the required game data using api key.
+        *   A new page can be created by the front end for each new game and added the complete link to curl back to the game directly from website.
+        *   The following is the game link for the demo point and shoot game, created just using javascript and hosted in github.
+            "https://gcbhoj.github.io/Point-n-Shoot/"
+    - developer (string): The name of the developer.
+    - difficulty (string): The difficulty level of the game (e.g., easy, medium, hard).
+    - rating (number): Admins inital game rating of the game on a scale (e.g., 1 to 5).
+    - gameVersion (string): The version of the game.
+    - isActive (boolean):
+        *   Indicates if the game is active (true) or inactive (false).
+        *   Use GET /api/games/byStatus to retrieve only active games.
+        *   Keeping inactive games preserves history without deleting records.
+Request Body:
+{
+    "gameName": "point & shoot",
+    "gameCategory": [
+        "RG"
+    ],
+    "gameImage": "https://raw.githubusercontent.com/Samskrita-Bharati/Zatam-Web-Images-Repo/main/point%26shoot_game.jpg",
+    "gameLink": "https://gcbhoj.github.io/Point-n-Shoot/",
+    "developer": "bhoj GC",
+    "difficulty": "easy",
+    "rating": 4.5,
+    "gameVersion": "1.1.0",
+    "isActive": true
+}
+Response:
+On successful creation of a new game, the API will respond with:
+    -   Status Code: 201 Created
+    -   Content-Type: application/json
+Response Body:
+{
+    "message": "Game with id: G_20250728_235754_872_163 Sucessfully Added"
+}
+Response Codes:
+throw new Type error – all fields are not filled. Possible messages:
+    - "Invalid gameName"
+    - "Invalid gameImage"
+    - "Invalid gameLink"
+    - "Invalid developer"
+    - "Invalid difficulty"
+    - "Invalid gameVersion"
+    - "Rating must be a number between 0 and 5"
+    - "isActive must be boolean"
+201 Created – "Success message" (Login successful)
+500 Internal Server Error – "Error message" (Unexpected server error)
+
+
+
+
+
+
+
+
+
+
 
 
