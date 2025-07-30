@@ -97,6 +97,7 @@ const getGameByCategory = async (req, res) => {
     }
 
     const snapshot = await gamesCollection
+      .where("isActive", "==", true)
       .where("gameCategory", "array-contains", gameCategory)
       .get();
 
@@ -127,6 +128,7 @@ const filterGames = async (req, res) => {
     }
 
     const snapshot = await gamesCollection
+      .where("isActive", "==", true)
       .where("difficulty", "==", gameDifficulty)
       .get();
 
@@ -156,6 +158,7 @@ const getGamesByName = async (req, res) => {
     }
 
     const snapshot = await gamesCollection
+      .where("isActive", "==", true)
       .where("gameName", ">=", gameName)
       .where("gameName", "<=", gameName + "\uf8ff")
       .get();

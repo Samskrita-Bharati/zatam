@@ -373,6 +373,7 @@ API Name: Get Games By Category
     API Method: GET
     API Description:
     This endpoint retrieves a list of games that belong to a specific category identified by the game category that was initially set. It allows users to access detailed information about each game within that category.
+    Only those game are retreived where the isActive status is set to true.
     Request Sample:
         - http://localhost:5000/api/games/getCatg/RG
     Response:
@@ -419,9 +420,109 @@ API Name: Get Games By Category
         - 500 Server Error - Error Message.
 
 API Name: Get Games By Difficulty
-API URL: http://localhost:5000/api/games/filter/:gameDifficulty
-API Method: GET
-API Description:
+    API URL: http://localhost:5000/api/games/filter/:gameDifficulty
+    API Method: GET
+    API Description:
+        - This endpoint retrieves a list of games filtered by their difficulty level.
+        - This endpoint retrieves only those games where is the isActive status is set to true.
+    Request Sample:
+        -category (string): The category code for which games are being requested. In this example, the difficulty is hard
+        - http://localhost:5000/api/games/filter/hard
+    Response:
+    The response will contain a JSON object with the following structure:
+    Response Body:
+    {
+        "games": [
+            {
+                "id": "G_20250721_195837_555_179",
+                "gameName": "ns_shaft game",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": true,
+                "timeStamp": "2025-07-21T23:58:37.557Z"
+            },
+            {
+                "id": "G_20250728_154203_454_239",
+                "gameName": "ns_shaft game",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": true,
+                "timeStamp": "2025-07-28T19:42:03.457Z"
+            }
+        ]
+    }
+    Response Codes:
+            - 200 OK - The request was successful, and the game details are returned.
+            - 400 Bad Request - Difficulty level is required.
+            - 404 Not Found - No games to display for the difficulty.
+            - 500 Server Error - Error message.
+
+API Name: Get Game By Name
+    API URL: http://localhost:5000/api/games/getName/:gameName
+    API Method: GET
+    API Description:
+        - This endpoint retrieves information about games based on the provided search input.
+        - If success the response will be in the form of array.
+        - This endpoint retrieves only those games where is the isActive status is set to true.
+    Request Sample:
+        - http://localhost:5000/api/games/getName/ns
+    Response:
+        The response will contain a JSON object with the following structure:
+    Response Body:
+    {
+        "games": [
+            {
+                "id": "G_20250721_195837_555_179",
+                "gameName": "ns_shaft game",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": true,
+                "timeStamp": "2025-07-21T23:58:37.557Z"
+            },
+            {
+                "id": "G_20250728_154203_454_239",
+                "gameName": "ns_shaft game",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": true,
+                "timeStamp": "2025-07-28T19:42:03.457Z"
+            }
+        ]
+    }
+    Response Codes:
+        - 200 OK - The request was successful, and the game details are returned.
+        - 400 Bad Request -  Game Name is Required
+        - 404 Not Found - No Games Found
+        - 500 Server Error -  Error Message
+
 
 
 
