@@ -523,6 +523,153 @@ API Name: Get Game By Name
         - 404 Not Found - No Games Found
         - 500 Server Error -  Error Message
 
+API Name: Update Game information
+    API URL : http://localhost:5000/api/games/gameUpdate/:id
+    API Method: PUT
+    API Description:
+        - This endpoint allows the admin to update the details of a specific game identified by its unique game ID. 
+        - The request must be made using the HTTP PUT method and includes a JSON payload containing the updated game information.
+        - The whole document is updated with a new time stamp.
+    Request Sample:
+    - http://localhost:5000/api/games/gameUpdate/G_20250730_100148_435_734
+    Request Body:
+    The following parameters should be included in the request body:
+        - gameName (string): The name of the game.
+        - gameCategory (array of strings): An array representing the categories the game belongs to.
+        - gameImage (string): The path to the game's image.
+        - gameLink (string): A URL link to the game.
+        - developer (string): The name of the developer.
+        - difficulty (string): The difficulty level of the game (e.g., easy, medium, hard).
+        - rating (integer): The rating of the game, typically on a scale (e.g., 1 to 5).
+        - gameVersion (string): The current version of the game.
+        - isActive (boolean): A flag indicating whether the game is active or not.
+    Response:
+    Upon a successful update, the API will return a response.
+        - message (string): A message indicating the result of the update (may be empty).
+        - id (string): The ID of the updated game (may be empty).
+    Response Body:
+    {
+        "message": "Game updated successfully",
+        "id": "G_20250730_100148_435_734"
+    }
+    Response Codes:
+        - 200 OK -  Game Updated Successfully
+        - 400 Bad Request - Id is required
+        - 400 Bad Request - Valid Game data is required
+        - 404 Not found - Game Not found
+        - 500 Server Error -  Error message
+
+API Name: Delete Game
+    API URL : http://localhost:5000/api/games/deleteGame/:id
+    API Method:POST
+    Special Note: 
+        - This API is not to be used for production purposes. 
+        - For the following reasons:
+            - All game data is stored in a seperate document, deleting will result in undefined game name while retreiving game data.
+            - To avoid the above confilt rather than deleting the status of the game can be changed to "is Active to false" by using the Upate Game Information API.
+    API Description:
+    This endpoint allows users to delete a game entry from the system.
+    Request Sample:
+        - http://localhost:5000/api/games/deleteGame/G_20250730_100148_435_734
+    Response:
+    Upon successful deletion, the API will respond with a confirmation message indicating that the game has been deleted. 
+    Response Body:
+    {
+        "message": "Document deleted successfully."
+    }
+    Response Codes:
+        - 200 OK - Game deleted Sucessfully
+        - 400 Bad Request - Id is required
+        - 404 Not Found - Game Not Found.
+        - 500 Server Error - Error message 
+
+API Name: Get Game By Rating
+    API URL: http://localhost:5000/api/games/rating
+    API Method: GET
+    API Description:
+    - This endpoint retrieves a list of games with ratings greater or equal to 4.0 along with all the game details.
+    - This endpoint only retrieves those games where the isActive status has been set to true.
+    Response:
+    On successful execution, the API will return a JSON array containing game details that match "isActive == true" status. 
+        Each game object typically includes details such as:
+            - id(string): Unique identifier for the game.
+            - gameName(string): Name of the game.
+            - gameCategory(Array): All the categories the game belongs to.
+            - gameImage(url): Image link to the game,
+            - gameLink(url): Game hosted URL.
+            - developer(string): Name of the developing team.
+            - difficulty(string): The difficulty the game is set to.
+            - gameVersion(float): Current Version of the game.
+            - rating(float): game
+            - isActive(boolean): Current status of the game.
+            - timeStamp(Date&time): Timestamp of when the game was inserted into the database.
+    Response Body:
+    {
+        "games": [
+            {
+                "id": "G_20250728_154203_454_239",
+                "gameName": "ns_shaft game",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": true,
+                "timeStamp": "2025-07-28T19:42:03.457Z"
+            },
+            {
+                "id": "G_20250728_235754_872_163",
+                "gameName": "ns_shaft game",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": true,
+                "timeStamp": "2025-07-29T03:57:54.890Z"
+            }
+        ]
+    }
+    Response Codes:
+        - 200 OK - Return Games
+        - 404 Not Found - No Games Found
+        - 500 Server Error - Error Message
+
+API Name: Toggle IsActive Status
+API URL: http://localhost:5000/api/games/toggle-status/:id
+API Method: PUT
+API Description:
+    - This endpoint toggles the isActive status of a specific game based on its unique ID.
+    - Sending a PUT request to this URL will switch the game’s status from true → false or false → true.
+    - Designed for front-end integration, allowing a button click to activate or deactivate a game dynamically.
+Response:
+On successful execution, the API will return a JSON array with the following
+    - message(string): game status update
+    - id(string):gameId
+    - isActive: Current status of the game.
+Response Body:
+{
+    "message": "Game status updated successfully",
+    "id": "G_20250729_001532_374_549",
+    "isActive": true
+}
+Response Codes:
+    - 200 OK - Returns the success message.
+    - 400 Bad Request - Game Id is required
+    - 404 Not Found - Game Not Found
+    - 500 Server Error - Error Message
+
+
+
+
 
 
 

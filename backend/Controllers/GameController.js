@@ -50,7 +50,6 @@ const getGamesByStatus = async (req, res) => {
   }
 };
 
-
 const getGames = async (req, res) => {
   try {
     const games = await fetchAllGames();
@@ -230,7 +229,7 @@ const deleteGame = async (req, res) => {
 
     await docRef.delete();
 
-    res.status(200).json({ message: "Document deleted successfully." });
+    res.status(200).json({ message: " Game deleted successfully." });
   } catch (err) {
     console.error("Error deleting game:", err.message);
     res.status(500).json({ error: err.message });
@@ -239,7 +238,9 @@ const deleteGame = async (req, res) => {
 
 const getGamesByRating = async (req, res) => {
   try {
-    const docRef = gamesCollection.where("rating", ">=", 4.0);
+    const docRef = gamesCollection
+      .where("isActive", "==", true)
+      .where("rating", ">=", 4.0);
     const docSnapshot = await docRef.get();
 
     if (docSnapshot.empty) {
@@ -257,6 +258,39 @@ const getGamesByRating = async (req, res) => {
   }
 };
 
+const updateIsActiveStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: "Game Id is required" });
+    }
+
+    const docRef = gamesCollection.doc(id);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ message: "Game not found" });
+    }
+
+    // Toggle the isActive status
+    const currentData = doc.data();
+    const newStatus = !currentData.isActive;
+
+    await docRef.update({ isActive: newStatus });
+
+    return res.status(200).json({
+      message: `Game status updated successfully`,
+      id,
+      isActive: newStatus,
+    });
+  } catch (error) {
+    console.error("Error updating game status:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
+  }
+};
+
 module.exports = {
   addNewGame,
   getGames,
@@ -268,4 +302,5 @@ module.exports = {
   updateGames,
   deleteGame,
   getGamesByRating,
+  updateIsActiveStatus,
 };
