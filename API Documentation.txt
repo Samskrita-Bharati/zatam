@@ -1,206 +1,438 @@
                                     "USER AUTHENTICATION (Signup/Login)"
 
 API Name: Signup
-API URL: http://localhost:5000/api/users/register
-HTTP Method: POST
-API Description: 
-This API creates a new user account in the database. The process follows these steps:
-1. Validates that all required inputs (userName, emailAddress, password) are not null.
-2. Checks if the userName already exists; if yes, returns a response indicating "Username already exists".
-3. Checks if the emailAddress already exists; if yes, returns a response indicating "Email already exists".
-4. Validates the password to ensure it meets the following criteria:
-    - Minimum 8 characters
-    - At least one uppercase letter
-    - At least one special character
-    - At least one number
-5. Hashes and salts the password using bcrypt for secure storage once validation passes.
-6. Assigns a default role of "User" to the new account.
-7. Adds a dateCreated field with the current date and time.
-8.  Saves all the information to the users collection with userName stored as entered by user to toLowerCase. 
-9. Upon successful registration a success message is sent.
-Request:
-The request must be sent in JSON format with the following fields:
-    - userName (string): The desired username for the new account.
-    - emailAddress (string): The email address associated with the account.
-    - password (string): The password for the account, which should meet security requirements.
-Request Body:
-{
-  "userName": "xxx",
-  "emailAddress": "xxxx",
-  "password": "xxxx"
-}
+    API URL: http://localhost:5000/api/users/register
+    HTTP Method: POST
+    API Description: 
+    This API creates a new user account in the database. The process follows these steps:
+    1. Validates that all required inputs (userName, emailAddress, password) are not null.
+    2. Checks if the userName already exists; if yes, returns a response indicating "Username already exists".
+    3. Checks if the emailAddress already exists; if yes, returns a response indicating "Email already exists".
+    4. Validates the password to ensure it meets the following criteria:
+        - Minimum 8 characters
+        - At least one uppercase letter
+        - At least one special character
+        - At least one number
+    5. Hashes and salts the password using bcrypt for secure storage once validation passes.
+    6. Assigns a default role of "User" to the new account.
+    7. Adds a dateCreated field with the current date and time.
+    8.  Saves all the information to the users collection with userName stored as entered by user to toLowerCase. 
+    9. Upon successful registration a success message is sent.
+    Request:
+    The request must be sent in JSON format with the following fields:
+        - userName (string): The desired username for the new account.
+        - emailAddress (string): The email address associated with the account.
+        - password (string): The password for the account, which should meet security requirements.
+    Request Body:
+    {
+    "userName": "xxx",
+    "emailAddress": "xxxx",
+    "password": "xxxx"
+    }
 
-Response:
-On successful registration, the API responds with a 201 Created status and a JSON object containing a message.
-    - Status Code: 201
-    - Content-Type: application/json
-Response Body:
-{
-    "message": "User with Id: U_20250728_125849_119_852 Successfully Added"
-}
+    Response:
+    On successful registration, the API responds with a 201 Created status and a JSON object containing a message.
+        - Status Code: 201
+        - Content-Type: application/json
+    Response Body:
+    {
+        "message": "User with Id: U_20250728_125849_119_852 Successfully Added"
+    }
 
-Response Codes:
-throw new Type error – all fields are not filled. Possible messages:
-    - "Invalid User Name"
-    - "Invalid Email Address"
-    - "Password must be at least 8 characters and include at least one number, one lowercase, and one uppercase letter"
-400 Bad Request – Validation failed. Possible messages:
-    - "All fields are required"
-    - "User already exists"
-    - "Email already registered"
-201 Created – "Success message" (User registered successfully)
-500 Internal Server Error – "Error message" (Unexpected server error)
+    Response Codes:
+    throw new Type error – all fields are not filled. Possible messages:
+        - "Invalid User Name"
+        - "Invalid Email Address"
+        - "Password must be at least 8 characters and include at least one number, one lowercase, and one uppercase letter"
+    400 Bad Request – Validation failed. Possible messages:
+        - "All fields are required"
+        - "User already exists"
+        - "Email already registered"
+    201 Created – "Success message" (User registered successfully)
+    500 Internal Server Error – "Error message" (Unexpected server error)
 
 API Name: Login
-API URL: http://localhost:5000/api/users/login
-HTTP Method: POST
-API Description:
-This API allows users to log in using their email address and password. The process follows these steps:
-1. Validates that all required inputs (emailAddress, password) are not null.
-2. Checks if the provided emailAddress exists in the database.
-3. If the email exists, uses bcrypt to compare the input password with the stored hashed password.
-4. If validation passes, generates a JWT token containing the userId, userName, and emailAddress with a 30-day expiration period. This token is used for authentication and automatically logs the user out when expired.
-5. Updates the user’s lastLogin field with the current date and time.
-6. Returns the user credentials and token with a 200 OK status code upon successful login.
-Request Body:
-{
-  "emailAddress": "xxxx",
-  "password": "xxxx"
-}
-Response:
-Upon a successful login, the server responds with a JSON object containing the following fields:
-    - message (string): A message indicating the result of the login attempt.
-    - userId (string): The unique identifier of the logged-in user.
-    - userName (string): The name of the user.
-    - token (string): The authentication token for the session.
-    - role (string): The role of the user within the system.
-Response Body:
-{
-  "message": "",
-  "userId": "",
-  "userName": "",
-  "token": "",
-  "role": ""
-}
+    API URL: http://localhost:5000/api/users/login
+    HTTP Method: POST
+    API Description:
+    This API allows users to log in using their email address and password. The process follows these steps:
+    1. Validates that all required inputs (emailAddress, password) are not null.
+    2. Checks if the provided emailAddress exists in the database.
+    3. If the email exists, uses bcrypt to compare the input password with the stored hashed password.
+    4. If validation passes, generates a JWT token containing the userId, userName, and emailAddress with a 30-day expiration period. This token is used for authentication and automatically logs the user out when expired.
+    5. Updates the user’s lastLogin field with the current date and time.
+    6. Returns the user credentials and token with a 200 OK status code upon successful login.
+    Request Body:
+    {
+    "emailAddress": "xxxx",
+    "password": "xxxx"
+    }
+    Response:
+    Upon a successful login, the server responds with a JSON object containing the following fields:
+        - message (string): A message indicating the result of the login attempt.
+        - userId (string): The unique identifier of the logged-in user.
+        - userName (string): The name of the user.
+        - token (string): The authentication token for the session.
+        - role (string): The role of the user within the system.
+    Response Body:
+    {
+    "message": "",
+    "userId": "",
+    "userName": "",
+    "token": "",
+    "role": ""
+    }
 
-Response Codes:
-400 Bad Request – Validation failed. Possible messages:
-    - "All fields are required"
-    - "Email Not Found"
-    - "Invalid Password"
-201 Created – "Success message" (Login successful)
-500 Internal Server Error – "Error message" (Unexpected server error)
+    Response Codes:
+    400 Bad Request – Validation failed. Possible messages:
+        - "All fields are required"
+        - "Email Not Found"
+        - "Invalid Password"
+    201 Created – "Success message" (Login successful)
+    500 Internal Server Error – "Error message" (Unexpected server error)
 
 API Name: Google Login
-API URL: http://localhost:5000/api/g-auth/google-login
-HTTP Method: POST
-API Description:
-    - The frontend authenticates the user with Google and sends the tokenId and user credentials to the API.
-    - The API verifies the tokenId with Google and checks if a user with the same email exists. If the user exists, their credentials are returned to the frontend for login. If not, a new user account is created, and the credentials are returned for login.
-    - The System Updates the User Last logged in to current date and time.
+    API URL: http://localhost:5000/api/g-auth/google-login
+    HTTP Method: POST
+    API Description:
+        - The frontend authenticates the user with Google and sends the tokenId and user credentials to the API.
+        - The API verifies the tokenId with Google and checks if a user with the same email exists. If the user exists, their credentials are returned to the frontend for login. If not, a new user account is created, and the credentials are returned for login.
+        - The System Updates the User Last logged in to current date and time.
 
-Request:
-The request body should be in JSON format and must contain the following parameters:
-    - userName (string): The username of the user attempting to log in.
-    - emailAddress (string): The email address associated with the user's Google account.
-    - password (string): The password for the user's Google account.
-    - token (string): The Google authentication token received from the Google sign-in process.
-Request Body:
-{
-"userName":"xxxxx",
-"emailAddress":"xxxx",
-"password":"xxxx",
-"token":"xxxxx"
+    Request:
+    The request body should be in JSON format and must contain the following parameters:
+        - userName (string): The username of the user attempting to log in.
+        - emailAddress (string): The email address associated with the user's Google account.
+        - password (string): The password for the user's Google account.
+        - token (string): The Google authentication token received from the Google sign-in process.
+    Request Body:
+    {
+    "userName":"xxxxx",
+    "emailAddress":"xxxx",
+    "password":"xxxx",
+    "token":"xxxxx"
 
-}
+    }
 
-Response:
-Upon successful authentication, the API returns the following JSON:
-Fields:
-•	message (string): Status message (e.g., success or error).
-•	userId (string): Unique identifier for the user.
-•	userName (string): The logged-in user's name.
-•	token (string): JWT authentication token.
-•	role (string): The user role assigned in the system.
-Response Body:
+    Response:
+    Upon successful authentication, the API returns the following JSON:
+    Fields:
+    •	message (string): Status message (e.g., success or error).
+    •	userId (string): Unique identifier for the user.
+    •	userName (string): The logged-in user's name.
+    •	token (string): JWT authentication token.
+    •	role (string): The user role assigned in the system.
+    Response Body:
 
-{
-    "message": "Login successful",
-    "userId": "U_20250728_125849_119_852",
-    "userName": "xxx",
-    "token": “JWT Token ",
-    "role": "xxx"
-}
+    {
+        "message": "Login successful",
+        "userId": "U_20250728_125849_119_852",
+        "userName": "xxx",
+        "token": “JWT Token ",
+        "role": "xxx"
+    }
 
-                                                                "Games (Adding/editing/updating active status)"
-
+"Games (Adding/editing/updating active status)"
 API Name: Add New Games
-API URL : http://localhost:5000/api/games/addNew
-HTTP Method : POST
+    API URL : http://localhost:5000/api/games/addNew
+    HTTP Method : POST
+    API Description:
+    This endpoint allows users to add a new game to the database. It accepts a JSON payload containing various details about the game.
+        - Validates all the fields are not null.
+        - creates a unique id 
+        - Adds a time stamp of the date and time the game was added.
+    Request:
+    The request body must be in JSON format and include the following parameters:
+        - gameName (string): The name of the game.
+        - gameCategory (array of strings): 
+            *   Categories associated with the game. This field supports multiple values.
+            *   Example: A game that is both recreational and educational can be stored as: "gameCategory": ["RG", "ET"]
+            *   The frontend can implement functionality to accept multiple categories and define its own category codes or names.
+        - gameImage (string): 
+            *   The path to the game's image. 
+            *   The following is the game link for the demo point and shoot game
+                "https://raw.githubusercontent.com/Samskrita-Bharati/Zatam-Web-Images-Repo/main/point%26shoot_game.jpg"
+            
+        - gameLink (string): 
+            *   A URL link to the game, which can he hosted any where as this application is designed to get all the required game data using api key.
+            *   A new page can be created by the front end for each new game and added the complete link to curl back to the game directly from website.
+            *   The following is the game link for the demo point and shoot game, created just using javascript and hosted in github.
+                "https://gcbhoj.github.io/Point-n-Shoot/"
+        - developer (string): The name of the developer.
+        - difficulty (string): The difficulty level of the game (e.g., easy, medium, hard).
+        - rating (number): Admins inital game rating of the game on a scale (e.g., 1 to 5).
+        - gameVersion (string): The version of the game.
+        - isActive (boolean):
+            *   Indicates if the game is active (true) or inactive (false).
+            *   Use GET /api/games/byStatus to retrieve only active games.
+            *   Keeping inactive games preserves history without deleting records.
+    Request Body:
+    {
+        "gameName": "point & shoot",
+        "gameCategory": [
+            "RG"
+        ],
+        "gameImage": "https://raw.githubusercontent.com/Samskrita-Bharati/Zatam-Web-Images-Repo/main/point%26shoot_game.jpg",
+        "gameLink": "https://gcbhoj.github.io/Point-n-Shoot/",
+        "developer": "bhoj GC",
+        "difficulty": "easy",
+        "rating": 4.5,
+        "gameVersion": "1.1.0",
+        "isActive": true
+    }
+    Response:
+    On successful creation of a new game, the API will respond with:
+        -   Status Code: 201 Created
+        -   Content-Type: application/json
+    Response Body:
+    {
+        "message": "Game with id: G_20250728_235754_872_163 Sucessfully Added"
+    }
+    Response Codes:
+    throw new Type error – all fields are not filled. Possible messages:
+        - "Invalid gameName"
+        - "Invalid gameImage"
+        - "Invalid gameLink"
+        - "Invalid developer"
+        - "Invalid difficulty"
+        - "Invalid gameVersion"
+        - "Rating must be a number between 0 and 5"
+        - "isActive must be boolean"
+    201 Created – "Success message" (Login successful)
+    500 Internal Server Error – "Error message" (Unexpected server error)
+
+API Name: Get Games By Status
+    API URL : http://localhost:5000/api/games/byStatus
+    HTTP Method : GET
+    API Description:
+    This endpoint retrieves a list of games filtered by their isActive status. 
+        - For example if the isActive status is set to false, that game will not be retreived.
+    Response:
+    On successful execution, the API will return a JSON array containing game details that match "isActive == true" status. 
+    Each game object typically includes details such as:
+        - id(string): Unique identifier for the game.
+        - gameName(string): Name of the game.
+        - gameCategory(Array): All the categories the game belongs to.
+        - gameImage(url): Image link to the game,
+        - gameLink(url): Game hosted URL.
+        - developer(string): Name of the developing team.
+        - difficulty(string): The difficulty the game is set to.
+        - gameVersion(float): Current Version of the game.
+        - rating(float): game
+        - isActive(boolean): Current status of the game.
+        - timeStamp(Date&time): Timestamp of when the game was inserted into the database.
+    Response Body:
+    {
+        "games": [
+            {
+                "id": "G_20250721_195837_555_179",
+                "gameName": "ns_shaft game",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": true,
+                "timeStamp": "2025-07-21T23:58:37.557Z"
+            },
+            {
+                "id": "G_20250728_154203_454_239",
+                "gameName": "ns_shaft game",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": true,
+                "timeStamp": "2025-07-28T19:42:03.457Z"
+            }
+        ]
+    }
+
+    Response Codes:
+        - 400 Bad Request - No Games Found
+        - 500 Internal Server Error - Error.message
+
+API Name: Get All Games
+    API URL: http://localhost:5000/api/games
+    HTTP Method : GET
+    API Description:
+    This endpoint retrieves a list of games available in the system. It provides detailed information about each game, including its attributes such as name, category, developer, and more.
+    Response:
+    On successful execution, the API returns a JSON object containing an array of games regardless of its isActive status.
+    Each game object typically includes details such as:
+        - id(string): Unique identifier for the game.
+        - gameName(string): Name of the game.
+        - gameCategory(Array): All the categories the game belongs to.
+        - gameImage(url): Image link to the game,
+        - gameLink(url): Game hosted URL.
+        - developer(string): Name of the developing team.
+        - difficulty(string): The difficulty the game is set to.
+        - gameVersion(float): Current Version of the game.
+        - rating(float): game
+        - isActive(boolean): Current status of the game.
+        - timeStamp(Date&time): Timestamp of when the game was inserted into the database.
+    Response Body:
+    {
+        "games": [
+            {
+                "gameId": "G_20250721_195837_555_179",
+                "gameName": "ns_shaft game",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": true,
+                "timeStamp": "2025-07-21T23:58:37.557Z"
+            },
+            {
+                "gameId": "G_20250728_154203_454_239",
+                "gameName": "ns_shaft game",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": true,
+                "timeStamp": "2025-07-28T19:42:03.457Z"
+            },
+            {
+                "gameId": "G_20250729_001532_374_549",
+                "gameName": "hello",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": false,
+                "timeStamp": "2025-07-29T04:15:32.374Z"
+            }
+        ]
+    }
+    Response Codes:
+        - 200 OK: The request was successful, and the game details are returned.
+        - 400 Bad Request - No Games Found
+        - 500 Internal Server Error - Error.message
+
+API Name: Get Game By Id
+    API URL: http://localhost:5000/api/games/get/:id
+    API Method: GET
+    API Description:
+    This endpoint retrieves detailed information about a specific game using its unique id.
+    It provides detailed information about the game, including its attributes such as name, category, developer, and more.
+
+    Request Parameter:
+        - id(string): gameId (string): The unique identifier of the game you want to retrieve. 
+        - In this example, it is G_20250721_195837_555_179.
+
+    Sample Request:
+        -   http://localhost:5000/api/games/get/G_20250721_195837_555_179.
+    Response:
+    Upon a successful request, the API returns a JSON object containing the following fields:
+        - id (string): The unique identifier of the game.
+        - gameName (string): The name of the game.
+        - gameCategory (array of strings): A list of categories that the game belongs to.
+        - gameImage (string): A URL or path to the game's image.
+        - gameLink (string): A URL link to the game's page or download.
+        - developer (string): The name of the developer of the game.
+        - difficulty (string): The difficulty level of the game.
+        - gameVersion (string): The version of the game.
+        - rating (number): The rating of the game, typically on a scale (e.g., 0 to 5).
+        - isActive (boolean): Indicates whether the game is currently active.
+        - timeStamp (object): Contains the timestamp of when the game information was last updated.
+
+    Response Codes:
+        - 200 OK: The request was successful, and the game details are returned.
+        - 400 Bad Request:  Id is Required
+        - 404 Not Found: Game Not Found
+        -500 Server Error: Error.message.
+
+API Name: Get Games By Category
+    API URL: http://localhost:5000/api/games/getCatg/:gameCategory
+    API Method: GET
+    API Description:
+    This endpoint retrieves a list of games that belong to a specific category identified by the game category that was initially set. It allows users to access detailed information about each game within that category.
+    Request Sample:
+        - http://localhost:5000/api/games/getCatg/RG
+    Response:
+    On successful execution, the API returns a JSON object with games from the category specified in the parameter.
+    Response Body:
+    {
+        "games": [
+            {
+                "id": "G_20250721_195837_555_179",
+                "gameName": "ns_shaft game",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": true,
+                "timeStamp": "2025-07-21T23:58:37.557Z"
+            },
+            {
+                "id": "G_20250728_154203_454_239",
+                "gameName": "ns_shaft game",
+                "gameCategory": [
+                    "RG"
+                ],
+                "gameImage": "/data/images/tictactoe.png",
+                "gameLink": "https://gcbhoj.github.io/SBGame0010/",
+                "developer": "sb_team",
+                "difficulty": "hard",
+                "gameVersion": "1.1.0",
+                "rating": 5,
+                "isActive": true,
+                "timeStamp": "2025-07-28T19:42:03.457Z"
+            }
+        ]
+    }
+    Response Codes:
+        - 200 OK - The request was successful, and the game details are returned.
+        - 400 Bad Request - Game category is missing.
+        - 404 Not Found - No Games Found for the category
+        - 500 Server Error - Error Message.
+
+API Name: Get Games By Difficulty
+API URL: http://localhost:5000/api/games/filter/:gameDifficulty
+API Method: GET
 API Description:
-This endpoint allows users to add a new game to the database. It accepts a JSON payload containing various details about the game.
-    - Validates all the fields are not null.
-    - creates a unique id 
-    - Adds a time stamp of the date and time the game was added.
-Request:
-The request body must be in JSON format and include the following parameters:
-    - gameName (string): The name of the game.
-    - gameCategory (array of strings): 
-        *   Categories associated with the game. This field supports multiple values.
-        *   Example: A game that is both recreational and educational can be stored as: "gameCategory": ["RG", "ET"]
-        *   The frontend can implement functionality to accept multiple categories and define its own category codes or names.
-    - gameImage (string): 
-        *   The path to the game's image. 
-        *   The following is the game link for the demo point and shoot game
-             "https://raw.githubusercontent.com/Samskrita-Bharati/Zatam-Web-Images-Repo/main/point%26shoot_game.jpg"
-        
-    - gameLink (string): 
-        *   A URL link to the game, which can he hosted any where as this application is designed to get all the required game data using api key.
-        *   A new page can be created by the front end for each new game and added the complete link to curl back to the game directly from website.
-        *   The following is the game link for the demo point and shoot game, created just using javascript and hosted in github.
-            "https://gcbhoj.github.io/Point-n-Shoot/"
-    - developer (string): The name of the developer.
-    - difficulty (string): The difficulty level of the game (e.g., easy, medium, hard).
-    - rating (number): Admins inital game rating of the game on a scale (e.g., 1 to 5).
-    - gameVersion (string): The version of the game.
-    - isActive (boolean):
-        *   Indicates if the game is active (true) or inactive (false).
-        *   Use GET /api/games/byStatus to retrieve only active games.
-        *   Keeping inactive games preserves history without deleting records.
-Request Body:
-{
-    "gameName": "point & shoot",
-    "gameCategory": [
-        "RG"
-    ],
-    "gameImage": "https://raw.githubusercontent.com/Samskrita-Bharati/Zatam-Web-Images-Repo/main/point%26shoot_game.jpg",
-    "gameLink": "https://gcbhoj.github.io/Point-n-Shoot/",
-    "developer": "bhoj GC",
-    "difficulty": "easy",
-    "rating": 4.5,
-    "gameVersion": "1.1.0",
-    "isActive": true
-}
-Response:
-On successful creation of a new game, the API will respond with:
-    -   Status Code: 201 Created
-    -   Content-Type: application/json
-Response Body:
-{
-    "message": "Game with id: G_20250728_235754_872_163 Sucessfully Added"
-}
-Response Codes:
-throw new Type error – all fields are not filled. Possible messages:
-    - "Invalid gameName"
-    - "Invalid gameImage"
-    - "Invalid gameLink"
-    - "Invalid developer"
-    - "Invalid difficulty"
-    - "Invalid gameVersion"
-    - "Rating must be a number between 0 and 5"
-    - "isActive must be boolean"
-201 Created – "Success message" (Login successful)
-500 Internal Server Error – "Error message" (Unexpected server error)
+
+
+
+
+
+
+
+
+
+
+
 
 
 

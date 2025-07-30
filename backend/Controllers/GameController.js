@@ -83,7 +83,7 @@ const getGameById = async (req, res) => {
     res.status(200).json({ id: doc.id, ...doc.data() });
   } catch (err) {
     console.error("Error Fetching Data:", err.message);
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
 

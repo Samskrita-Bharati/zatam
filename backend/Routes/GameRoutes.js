@@ -15,7 +15,6 @@ const {
 
 router.post("/addNew", addNewGame);
 router.get("/", getGames);
-router.get("/", getGames);
 router.get("/byStatus", getGamesByStatus);
 router.get("/get/:id", getGameById);
 router.get("/getCatg/:gameCategory", getGameByCategory);
