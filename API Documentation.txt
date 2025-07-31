@@ -644,28 +644,28 @@ API Name: Get Game By Rating
         - 500 Server Error - Error Message
 
 API Name: Toggle IsActive Status
-API URL: http://localhost:5000/api/games/toggle-status/:id
-API Method: PUT
-API Description:
-    - This endpoint toggles the isActive status of a specific game based on its unique ID.
-    - Sending a PUT request to this URL will switch the game’s status from true → false or false → true.
-    - Designed for front-end integration, allowing a button click to activate or deactivate a game dynamically.
-Response:
-On successful execution, the API will return a JSON array with the following
-    - message(string): game status update
-    - id(string):gameId
-    - isActive: Current status of the game.
-Response Body:
-{
-    "message": "Game status updated successfully",
-    "id": "G_20250729_001532_374_549",
-    "isActive": true
-}
-Response Codes:
-    - 200 OK - Returns the success message.
-    - 400 Bad Request - Game Id is required
-    - 404 Not Found - Game Not Found
-    - 500 Server Error - Error Message
+    API URL: http://localhost:5000/api/games/toggle-status/:id
+    API Method: PUT
+    API Description:
+        - This endpoint toggles the isActive status of a specific game based on its unique ID.
+        - Sending a PUT request to this URL will switch the game’s status from true → false or false → true.
+        - Designed for front-end integration, allowing a button click to activate or deactivate a game dynamically.
+    Response:
+    On successful execution, the API will return a JSON array with the following
+        - message(string): game status update
+        - id(string):gameId
+        - isActive: Current status of the game.
+    Response Body:
+    {
+        "message": "Game status updated successfully",
+        "id": "G_20250729_001532_374_549",
+        "isActive": true
+    }
+    Response Codes:
+        - 200 OK - Returns the success message.
+        - 400 Bad Request - Game Id is required
+        - 404 Not Found - Game Not Found
+        - 500 Server Error - Error Message
 
 
 

@@ -1,24 +1,25 @@
+const admin = require("firebase-admin");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const { getFirestore } = require("firebase-admin/firestore");
 const getDateTimeParts = require("../utils/DateTimeService");
 const jwt = require("jsonwebtoken");
+const nodeMailer = require("nodemailer");
 
 const db = getFirestore();
 const usersCollection = db.collection("users");
 
 // Function to create JWT
-const createToken = ({ _id, userName, emailAddress }) => {
+const createToken = ({ _id, userName, emailAddress }, expiresIn) => {
   const jwtkey = process.env.JWT_SECRET_KEY;
   if (!jwtkey) {
     throw new Error("JWT_SECRET_KEY is not defined in environment variables");
   }
 
   return jwt.sign({ _id, userName, emailAddress }, jwtkey, {
-    expiresIn: "30d",
+    expiresIn: expiresIn,
   });
 };
-
 
 // function to sign up new a user using our sign up logic
 const registerNewUser = async (req, res) => {
@@ -92,11 +93,14 @@ const logInUser = async (req, res) => {
     }
 
     // Step 3: Generate token
-    const token = createToken({
-      _id: doc.id,
-      userName: userData.userName,
-      emailAddress: userData.emailAddress,
-    });
+    const token = createToken(
+      {
+        _id: doc.id,
+        userName: userData.userName,
+        emailAddress: userData.emailAddress,
+      },
+      "30d"
+    );
 
     //update lastLogin
     await usersCollection.doc(doc.id).update({
@@ -116,8 +120,44 @@ const logInUser = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  try {
+    const { emailAddress } = req.body;
+    if (!emailAddress) {
+      return res.status(400).json({ message: "Email is Required" });
+    }
+
+    const docRef = await usersCollection
+      .where("emailAddress", "==", emailAddress)
+      .get();
+
+    if (docRef.empty) {
+      return res.status(404).json({ message: "Email Address not found." });
+    }
+
+    const doc = querySnapshot.docs[0];
+    const userData = doc.data();
+
+    const token = createToken(
+      {
+        _id: doc.id,
+        userName: userData.userName,
+        emailAddress: userData.emailAddress,
+      },
+      "30m"
+    );
+
+    const resetLink = await admin
+      .auth()
+      .generatePasswordResetLink(emailAddress, {
+        url: process.env.FRONT_END_PASSWORD_RESET_URL,
+      });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   registerNewUser,
   logInUser,
-  
 };
