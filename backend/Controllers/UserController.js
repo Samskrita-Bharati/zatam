@@ -1,24 +1,47 @@
 const admin = require("firebase-admin");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const { getFirestore } = require("firebase-admin/firestore");
+const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 const getDateTimeParts = require("../utils/DateTimeService");
 const jwt = require("jsonwebtoken");
-const nodeMailer = require("nodemailer");
+const sendEmail = require("../utils/Email");
+const crypto = require("crypto");
 
 const db = getFirestore();
 const usersCollection = db.collection("users");
 
 // Function to create JWT
-const createToken = ({ _id, userName, emailAddress }, expiresIn) => {
+const createToken = ({ _id, userName, emailAddress }) => {
   const jwtkey = process.env.JWT_SECRET_KEY;
   if (!jwtkey) {
     throw new Error("JWT_SECRET_KEY is not defined in environment variables");
   }
 
   return jwt.sign({ _id, userName, emailAddress }, jwtkey, {
-    expiresIn: expiresIn,
+    expiresIn: "30d",
   });
+};
+
+//Function to create password reset token using crypto
+const resetPasswordToken = () => {
+  // Generate random token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  // Hash the token to store securely
+  const passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // Set token expiry to 15 minutes from now
+  const passwordResetTokenExpiry = new Date(
+    Date.now() + 15 * 60 * 1000
+  ).toISOString();
+  return {
+    resetToken, // Plain token to send to user via email
+    passwordResetToken, // Hashed token to store in DB
+    passwordResetTokenExpiry,
+  };
 };
 
 // function to sign up new a user using our sign up logic
@@ -69,7 +92,7 @@ const logInUser = async (req, res) => {
   try {
     const { emailAddress, password } = req.body;
 
-    if (!userName || !password) {
+    if (!emailAddress || !password) {
       return res.status(400).json({ message: "All Fields are Required" });
     }
 
@@ -93,14 +116,11 @@ const logInUser = async (req, res) => {
     }
 
     // Step 3: Generate token
-    const token = createToken(
-      {
-        _id: doc.id,
-        userName: userData.userName,
-        emailAddress: userData.emailAddress,
-      },
-      "30d"
-    );
+    const token = createToken({
+      _id: doc.id,
+      userName: userData.userName,
+      emailAddress: userData.emailAddress,
+    });
 
     //update lastLogin
     await usersCollection.doc(doc.id).update({
@@ -120,44 +140,65 @@ const logInUser = async (req, res) => {
   }
 };
 
-const changePassword = async (req, res) => {
+const forgotPassword = async (req, res) => {
   try {
     const { emailAddress } = req.body;
     if (!emailAddress) {
       return res.status(400).json({ message: "Email is Required" });
     }
 
-    const docRef = await usersCollection
+    const querySnapshot = await usersCollection
       .where("emailAddress", "==", emailAddress)
       .get();
 
-    if (docRef.empty) {
+    if (querySnapshot.empty) {
       return res.status(404).json({ message: "Email Address not found." });
     }
 
     const doc = querySnapshot.docs[0];
     const userData = doc.data();
 
-    const token = createToken(
-      {
-        _id: doc.id,
-        userName: userData.userName,
-        emailAddress: userData.emailAddress,
-      },
-      "30m"
-    );
+    const { resetToken, passwordResetToken, passwordResetTokenExpiry } =
+      resetPasswordToken();
 
-    const resetLink = await admin
-      .auth()
-      .generatePasswordResetLink(emailAddress, {
-        url: process.env.FRONT_END_PASSWORD_RESET_URL,
+    await usersCollection.doc(doc.id).update({
+      passwordResetToken: passwordResetToken,
+      passwordResetTokenExpiry: passwordResetTokenExpiry,
+    });
+    // Sending the token back to the user email
+    const resetUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/api/users/resetPassword/${resetToken}`;
+    const message = `We have received a password reset request. Please use the below link to reset your password\n\n${resetUrl}\n\nThis above link will only be valid for 15 Minutes`;
+
+    try {
+      await sendEmail({
+        emailAddress: userData.emailAddress,
+        subject: "Password change request received",
+        message: message,
       });
+
+      return res
+        .status(200)
+        .json({ message: "Password reset Link succesfully sent." });
+    } catch (error) {
+      await usersCollection.doc(doc.id).update({
+        passwordResetToken: FieldValue.delete(),
+        passwordResetTokenExpiry: FieldValue.delete(),
+      });
+
+      return res.status(500).json({ message: error.message });
+    }
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 };
 
+const resetPassword = async (req, res) => {};
+
 module.exports = {
   registerNewUser,
   logInUser,
+  forgotPassword,
+  resetPassword,
 };
