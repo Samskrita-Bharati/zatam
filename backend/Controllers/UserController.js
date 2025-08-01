@@ -194,7 +194,60 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-const resetPassword = async (req, res) => {};
+const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
+    if (!token) {
+      return res.status(400).json({ message: "Invalid Request" });
+    }
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const querySnapshot = await usersCollection
+      .where("passwordResetToken", "==", hashedToken)
+      .where("passwordResetTokenExpiry", ">", new Date().toISOString())
+      .get();
+    if (querySnapshot.empty) {
+      return res.status(400).json({ message: "Invalid or Expired Link" });
+    }
+    const doc = querySnapshot.docs[0];
+    const userData = doc.data();
+
+    if (!password) {
+      return res.status(400).json({ message: "Password is required" });
+    } else if (typeof password !== "string" || !passwordRegex.test(password)) {
+      return res.status(400).json({ message: "Invalid Password" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    await usersCollection.doc(doc.id).update({
+      password: hashedPassword,
+      lastPasswordUpdate: new Date().toISOString(),
+      passwordResetToken: FieldValue.delete(),
+      passwordResetTokenExpiry: FieldValue.delete(),
+      lastLogin: new Date().toISOString(),
+    });
+
+    const jwtToken = createToken({
+      _id: doc.id,
+      userName: userData.userName,
+      emailAddress: userData.emailAddress,
+    });
+
+    return res.status(200).json({
+      message: "Password Reset Sucessful",
+      userId: doc.id,
+      userName: userData.userName,
+      jwtToken,
+      role: userData.role,
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
 
 module.exports = {
   registerNewUser,
