@@ -5,7 +5,7 @@ const db = getFirestore();
 const gamesDataCollection = db.collection("gamesdata");
 const gamesCollection = db.collection("games");
 
-const userCollection = db.collection("users")
+const userCollection = db.collection("users");
 
 const fetchGamesDataWithNames = async () => {
   try {
@@ -37,18 +37,37 @@ const fetchGamesDataWithNames = async () => {
     const userFetches = [];
 
     for (let userId of allUserIds) {
-      const query = userCollection.where("userId", "==", userId).limit(1).get();
-      userFetches.push(query);
+      // Try fetching by document ID first
+      const docRef = userCollection.doc(userId).get();
+      userFetches.push(
+        docRef.then((docSnap) => {
+          if (docSnap.exists) {
+            const user = docSnap.data();
+            userIdToNameMap[userId] = user.userName || "Unnamed User";
+          } else {
+            // If no doc found by ID, try by field "userId"
+            return userCollection
+              .where("userId", "==", userId)
+              .limit(1)
+              .get()
+              .then((querySnap) => {
+                if (!querySnap.empty) {
+                  const doc = querySnap.docs[0];
+                  const user = doc.data();
+                  userIdToNameMap[userId] = user.userName || "Unnamed User";
+                } else {
+                  console.warn(
+                    `⚠ No matching user found for userId: ${userId}`
+                  );
+                  userIdToNameMap[userId] = "Unknown User";
+                }
+              });
+          }
+        })
+      );
     }
 
-    const userSnapshots = await Promise.all(userFetches);
-    userSnapshots.forEach((snap) => {
-      if (!snap.empty) {
-        const doc = snap.docs[0];
-        const user = doc.data();
-        userIdToNameMap[user.userId] = user.userName;
-      }
-    });
+    await Promise.all(userFetches);
 
     // Step 3: Enrich game data with userNames
     const enrichedGameData = gameDataList.map((data) => ({
@@ -68,9 +87,10 @@ const fetchGamesDataWithNames = async () => {
 
     return enrichedGameData;
   } catch (err) {
-    console.log("Error Fetching Game Data:", err);
+    console.error("Error Fetching Game Data:", err);
     return [];
   }
 };
 
-module.exports = {fetchGamesDataWithNames}
+
+module.exports = { fetchGamesDataWithNames };

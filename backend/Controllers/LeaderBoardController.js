@@ -21,6 +21,7 @@ const leaderBoardAllGames = async (req, res) => {
         return {
           gameName: game.gameName,
           userId: scoreDetails.userId,
+          userName: scoreDetails.userName,
           scoreAchieved: scoreDetails.score,
           dateAcheived: new Date(scoreDetails.timeStamp),
         };
@@ -56,15 +57,24 @@ const leaderBoardByGame = async (req, res) => {
       .map((game) => ({
         gameName: game.gameName,
         scoreBoard: game.scoreDetails
-          .sort((a, b) => b.score - a.score)
-          .slice(0, 10),
+          .sort((a, b) => b.score - a.score) // sort by score
+          .slice(0, 10) // top 10
+          .map(({ userId, userName, score, timeStamp }) => ({
+            userId,
+            userName,
+            score,
+            timeStamp,
+          })),
       }));
 
     return res.status(200).json({ formattedData });
   } catch (err) {
-    return res.status(500).json({ message: "Error Fetching Data:", err });
+    return res
+      .status(500)
+      .json({ message: "Error Fetching Data", error: err.message });
   }
 };
+
 
 const leaderBoardByUser = async (req, res) => {
   try {
@@ -80,6 +90,7 @@ const leaderBoardByUser = async (req, res) => {
         game.scoreDetails.map((score) => ({
           gameName: game.gameName,
           userId: score.userId,
+          userName: score.userName,
           achievedOn: score.timeStamp,
           score: score.score,
         }))
@@ -89,6 +100,8 @@ const leaderBoardByUser = async (req, res) => {
           b.score - a.score || new Date(b.achievedOn) - new Date(a.achievedOn)
       ) // Sort by score, then timestamp
       .slice(0, 10); // Optional: top 50
+
+    const arrangedData = leaderboard;
 
     return res.status(200).json({ leaderboard });
   } catch (err) {

@@ -132,6 +132,42 @@ API Name: Google Login
         "role": "xxx"
     }
 
+API Name: Send Password Reset Link
+    API URL: http://localhost:5000/api/users/forgotPassword 
+    HTTP Method: POST
+    API Description:
+        - This endpoint allows users to initiate the password recovery process by submitting their email address. Upon successful submission, a recovery email will be sent to the provided address.
+        -  This endpoint uses nodemailer to send emails.
+        - Currently for testing purposes, the reset link that is being sent is trapped in mailtrap.
+    Request:
+        The Request body must be in json format with the following 
+        - emailAddress(string): Email Address of the user associated with the account.
+    Response:
+        Upon sucessful authentication, the API status indicates that the request was processed correctly and a password reset link has been sent to the user.
+    Response Body:
+    {
+        "message": "Password reset Link succesfully sent."
+    }
+
+API Name: Reset Password
+    API URL: http://localhost:5000/api/users/resetpassword/:token
+    API Method: PATCH
+    API Description:
+    This endpoint is designed to allow users to reset their password. It utilizes the HTTP PATCH method to update the password for a specific user identified by their unique user ID.
+    Request:
+    - The request must conatin the JWTtoken sent with the reset password link as the request param, sent with the send Password Reset link API.
+    - New password must be sent as a JSON body.
+    Response:
+    Upon a successful password reset, the API will respond with a confirmation message or status indicating the success of the operation. The structure of the response may vary, but it typically includes:
+    -   message (string): A descriptive message providing additional context about the operation.
+
+    Response Body:
+    {
+    "status": "success",
+    "message": "Password has been reset successfully."
+    }
+
+
 "Games (Adding/editing/updating active status)"
 API Name: Add New Games
     API URL : http://localhost:5000/api/games/addNew
@@ -667,8 +703,288 @@ API Name: Toggle IsActive Status
         - 404 Not Found - Game Not Found
         - 500 Server Error - Error Message
 
+Game Data (Adds and remove Games data)
 
+API Name: Add Games Data
+    API URL: http://localhost:5000/api/gamesData/addNew
+    API Method: POST
+    API Description:
+    This endpoint allows users to add new game data to the system. It accepts a POST request containing game-related information in the request body.
+    Request:
+        - gameId (string): A unique identifier for the game.
+        - userId (string): A unique identifier for the user playing the game.
+        - playTime (integer): The total playtime for the game in milliseconds.
+        - score (integer): The score achieved by the user in the game.
+        - rating (integer): The rating given by the user for the game (typically on a scale).
+        - isFavorite (boolean): A flag indicating whether the game is marked as a favorite by the user.
+    Response:
+    The API will return a status code indicating the result of the request. In case of an error, the response will include a message detailing the issue.
+    Response Body:
+    {
+        "message": "Game data saved successfully"
+    }
 
+API Name: Get Games Data
+    API URL: http://localhost:5000/api/gamesData
+    API Method: GET
+    API Description:
+        - This endpoint retrieves a list of game data from the server. It is designed to provide information about various games, including their play statistics, scores, and user interactions.
+    Response:
+        - On a successful request, the server responds with a 200 OK status and a JSON object containing an array of game data. The structure of the response is as follows:
+    Response Body:
+    {
+    "gamesData": [
+        {
+        "id": "",                       // Unique identifier for the game
+        "gameId": "",                   // Identifier for the specific game
+        "lastUpdated": "",              // Timestamp of the last update
+        "playCount": 0,                 // Total number of times the game has been played
+        "totalReviews": 0,              // Total number of reviews submitted
+        "averageTimePlayed": 0,         // Average time spent playing the game
+        "highScoreDetails": [            // Array of high score details
+            {
+            "highScore": 0,             // The highest score achieved
+            "userId": "",                // Identifier of the user who achieved the high score
+            "timeStamp": ""              // Timestamp of when the high score was achieved
+            }
+        ],
+        "rating": 0,                    // Overall rating of the game
+        "scoreDetails": [                // Array of score details for users
+            {
+            "userId": "",                // Identifier of the user
+            "score": 0,                  // Score achieved by the user
+            "playTime": 0,               // Time spent playing by the user
+            "rating": 0,                 // User's rating for the game
+            "timeStamp": ""              // Timestamp of the score entry
+            }
+        ],
+        "totalScreenTime": 0,           // Total screen time for the game
+        "lastPlayed": "",                // Timestamp of the last time the game was played
+        "averageScore": 0,              // Average score of all players
+        "gameName": ""                  // Name of the game
+        }
+    ]
+    }
+
+LeaderBoard(Games LeaderBoard/LeaderBoard Individual Games/LeaderBoard)
+API Name: LeaderBoard By Games
+    API URL: http://localhost:5000/api/gamesData
+    API Method: GET
+    API Description:
+        - This end point retrieves the top 10 games and thier high scores,acheived date and user details.
+        - This end point can also be used to analyze the popularity of the game by high scores.
+    Response:
+        - The response will contain a JSON object with the following structure:
+    Response Body:
+    {
+        "arrangedData": [
+            {
+                "gameName": "tic-tac-toe",
+                "userId": "U_20250810_134926_747_879",
+                "scoreAchieved": 10050,
+                "dateAcheived": "2025-08-10T18:39:49.838Z"
+            },
+            {
+                "gameName": "pirates",
+                "userId": "U_20250810_134926_747_879",
+                "scoreAchieved": 1000,
+                "dateAcheived": "2025-08-10T17:57:31.365Z"
+            },
+            {
+                "gameName": "harry",
+                "userId": "U_20250810_135048_222_712",
+                "scoreAchieved": 550,
+                "dateAcheived": "2025-08-10T18:33:39.568Z"
+            }
+        ]
+    }
+
+API Name: Leadership Individual Games
+    API URL: http://localhost:5000/api/leaderBoard/game
+    API Method: GET
+    AAPI Description:
+    This endpoint retrieves the top 10 games with their Individual leaderBoard, with user data and dateAcheived
+    This endpoint can also be used to analyze the inidividual player performace by game.
+    Response:
+    The response will contain a JSON object with the following structure:
+    Response Body:
+        {
+    "formattedData": [
+        {
+            "gameName": "pirates",
+            "scoreBoard": [
+                {
+                    "userId": "U_20250810_134926_747_879",
+                    "userName": "jana",
+                    "score": 1000,
+                    "timeStamp": "2025-08-10T17:57:31.365Z"
+                },
+                {
+                    "userId": "U_20250810_134941_848_605",
+                    "userName": "presha",
+                    "score": 999,
+                    "timeStamp": "2025-08-10T17:58:50.480Z"
+                },
+                {
+                    "userId": "U_20250810_135012_950_637",
+                    "userName": "hana",
+                    "score": 500,
+                    "timeStamp": "2025-08-10T18:31:58.709Z"
+                },
+                {
+                    "userId": "U_20250810_135048_222_712",
+                    "userName": "sienna",
+                    "score": 100,
+                    "timeStamp": "2025-08-10T18:32:19.385Z"
+                }
+            ]
+        },
+        {
+            "gameName": "harry",
+            "scoreBoard": [
+                {
+                    "userId": "U_20250810_134926_747_879",
+                    "userName": "jana",
+                    "score": 1050,
+                    "timeStamp": "2025-08-10T18:35:11.663Z"
+                },
+                {
+                    "userId": "U_20250810_134941_848_605",
+                    "userName": "presha",
+                    "score": 950,
+                    "timeStamp": "2025-08-10T18:34:50.455Z"
+                },
+                {
+                    "userId": "U_20250810_135012_950_637",
+                    "userName": "hana",
+                    "score": 750,
+                    "timeStamp": "2025-08-10T18:34:26.057Z"
+                },
+                {
+                    "userId": "U_20250810_135048_222_712",
+                    "userName": "sienna",
+                    "score": 550,
+                    "timeStamp": "2025-08-10T18:33:39.568Z"
+                }
+            ]
+        },
+        {
+            "gameName": "tic-tac-toe",
+            "scoreBoard": [
+                {
+                    "userId": "U_20250810_135048_222_712",
+                    "userName": "sienna",
+                    "score": 40050,
+                    "timeStamp": "2025-08-10T18:43:11.504Z"
+                },
+                {
+                    "userId": "U_20250810_135012_950_637",
+                    "userName": "hana",
+                    "score": 30050,
+                    "timeStamp": "2025-08-10T18:42:30.415Z"
+                },
+                {
+                    "userId": "U_20250810_134941_848_605",
+                    "userName": "presha",
+                    "score": 20050,
+                    "timeStamp": "2025-08-10T18:41:33.695Z"
+                },
+                {
+                    "userId": "U_20250810_134926_747_879",
+                    "userName": "jana",
+                    "score": 10050,
+                    "timeStamp": "2025-08-10T18:39:49.838Z"
+                }
+            ]
+        }
+    ]
+}
+
+API Name: LeaderBoard
+    API URL: http://localhost:5000/api/leaderBoard/by-user
+    API MEthod: GET
+    API Description:
+    This endpoint retrieves the leaderboard information for a specific user. It returns a list of games along with the user's scores and the date they achieved those scores.
+    This endpoint retreives only the top 10 high scorers.
+    Response:
+    This response provides a structured view of the user's performance across different games.
+    Response Body:
+    {
+        "leaderboard": [
+            {
+                "gameName": "tic-tac-toe",
+                "userId": "U_20250810_135048_222_712",
+                "userName": "sienna",
+                "achievedOn": "2025-08-10T18:43:11.504Z",
+                "score": 40050
+            },
+            {
+                "gameName": "tic-tac-toe",
+                "userId": "U_20250810_135012_950_637",
+                "userName": "hana",
+                "achievedOn": "2025-08-10T18:42:30.415Z",
+                "score": 30050
+            },
+            {
+                "gameName": "tic-tac-toe",
+                "userId": "U_20250810_134941_848_605",
+                "userName": "presha",
+                "achievedOn": "2025-08-10T18:41:33.695Z",
+                "score": 20050
+            },
+            {
+                "gameName": "tic-tac-toe",
+                "userId": "U_20250810_134926_747_879",
+                "userName": "jana",
+                "achievedOn": "2025-08-10T18:39:49.838Z",
+                "score": 10050
+            },
+            {
+                "gameName": "harry",
+                "userId": "U_20250810_134926_747_879",
+                "userName": "jana",
+                "achievedOn": "2025-08-10T18:35:11.663Z",
+                "score": 1050
+            },
+            {
+                "gameName": "pirates",
+                "userId": "U_20250810_134926_747_879",
+                "userName": "jana",
+                "achievedOn": "2025-08-10T17:57:31.365Z",
+                "score": 1000
+            },
+            {
+                "gameName": "pirates",
+                "userId": "U_20250810_134941_848_605",
+                "userName": "presha",
+                "achievedOn": "2025-08-10T17:58:50.480Z",
+                "score": 999
+            },
+            {
+                "gameName": "harry",
+                "userId": "U_20250810_134941_848_605",
+                "userName": "presha",
+                "achievedOn": "2025-08-10T18:34:50.455Z",
+                "score": 950
+            },
+            {
+                "gameName": "harry",
+                "userId": "U_20250810_135012_950_637",
+                "userName": "hana",
+                "achievedOn": "2025-08-10T18:34:26.057Z",
+                "score": 750
+            },
+            {
+                "gameName": "harry",
+                "userId": "U_20250810_135048_222_712",
+                "userName": "sienna",
+                "achievedOn": "2025-08-10T18:33:39.568Z",
+                "score": 550
+            }
+        ]
+    }
+
+Analytics
 
 
 
