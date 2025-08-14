@@ -249,9 +249,62 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const getNumberOfUsersByQuarter = async (req, res) => {
+  try {
+    // Query to get all users where role is "user"
+    const userSnapshot = await usersCollection
+      .where("role", "==", "User")
+      .get();
+
+    if (userSnapshot.empty) {
+      return res.status(400).json({ message: "No user Found." });
+    }
+
+    // Extract the data
+    const users = userSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    // Group by year and quarter
+    const yearQuarterData = {};
+
+    users.forEach((user) => {
+      const createdDate = new Date(user.dateCreated);
+      const year = createdDate.getFullYear();
+      const month = createdDate.getMonth(); // 0-based
+      const quarter = `Q${Math.floor(month / 3) + 1}`;
+
+      if (!yearQuarterData[year]) {
+        yearQuarterData[year] = {};
+      }
+      if (!yearQuarterData[year][quarter]) {
+        yearQuarterData[year][quarter] = 0;
+      }
+
+      yearQuarterData[year][quarter]++;
+    });
+
+    // Transform to desired format
+    const arrangedData = Object.keys(yearQuarterData).map((year) => ({
+      year: parseInt(year),
+      userData: Object.entries(yearQuarterData[year]).map(
+        ([quarter, count]) => ({
+          [quarter]: count,
+        })
+      ),
+    }));
+
+    return res.status(200).json(arrangedData);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   registerNewUser,
   logInUser,
   forgotPassword,
   resetPassword,
+  getNumberOfUsersByQuarter,
 };

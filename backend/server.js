@@ -30,8 +30,8 @@ const gameDataRoutes = require("./Routes/GameDataRoutes");
 const analyticsRoutes = require("./Routes/AnalyticsRoutes");
 const leaderBoardRoutes = require("./Routes/LeaderBoardRoutes");
 const userRoutes = require("./Routes/UserRoutes");
-const googleRoutes = require("./Routes/GoogleRoutes")
-
+const googleRoutes = require("./Routes/GoogleRoutes");
+const userAnalytics = require("./Routes/DataAnalytics");
 
 const app = express();
 const port = 5000;
@@ -44,7 +44,8 @@ app.use("/api/gamesData", gameDataRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/leaderBoard", leaderBoardRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/g-auth",googleRoutes)
+app.use("/api/g-auth", googleRoutes);
+app.use("/api/user-analytics", userAnalytics);
 
 app.listen(port, () => {
   console.log(`Server running on port: ${port}`);
