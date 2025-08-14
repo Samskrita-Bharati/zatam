@@ -2,6 +2,7 @@ const Game = require("../models/Game");
 const { getFirestore } = require("firebase-admin/firestore");
 const getDateTimeParts = require("../utils/DateTimeService");
 const { fetchAllGames } = require("../Services/GameService");
+const { messaging } = require("firebase-admin");
 
 const db = getFirestore();
 const gamesCollection = db.collection("games");
@@ -291,6 +292,44 @@ const updateIsActiveStatus = async (req, res) => {
   }
 };
 
+const getNumberofGamesByQuarter = async (req, res) => {
+  try {
+    const gamesData = await fetchAllGames();
+    if (!gamesData) {
+      console.log("No Games Available.");
+    }
+
+    const yearQuarterData = {};
+
+    gamesData.forEach((game) => {
+      const gameAddedDate = new Date(game.timeStamp);
+      const year = gameAddedDate.getFullYear();
+      const month = gameAddedDate.getMonth();
+      const quarter = `Q${Math.floor(month / 3) + 1}`;
+
+      if (!yearQuarterData[year]) {
+        yearQuarterData[year] = {};
+      }
+      if (!yearQuarterData[year][quarter]) {
+        yearQuarterData[year][quarter] = 0;
+      }
+
+      yearQuarterData[year][quarter]++;
+    });
+    const arrangedData = Object.keys(yearQuarterData).map((year) => ({
+      year: parseInt(year),
+      gameData: Object.entries(yearQuarterData[year]).map(
+        ([quarter, count]) => ({
+          [quarter]: count,
+        })
+      ),
+    }));
+    return res.status(200).json(arrangedData);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   addNewGame,
   getGames,
@@ -303,4 +342,5 @@ module.exports = {
   deleteGame,
   getGamesByRating,
   updateIsActiveStatus,
+  getNumberofGamesByQuarter,
 };

@@ -803,10 +803,10 @@ API Name: Leadership Individual Games
     API URL: http://localhost:5000/api/leaderBoard/game
     API Method: GET
     AAPI Description:
-    This endpoint retrieves the top 10 games with their Individual leaderBoard, with user data and dateAcheived
-    This endpoint can also be used to analyze the inidividual player performace by game.
+        - This endpoint retrieves the top 10 games with their Individual leaderBoard, with user data and dateAcheived
+        - This endpoint can also be used to analyze the inidividual player performace by game.
     Response:
-    The response will contain a JSON object with the following structure:
+        - The response will contain a JSON object with the following structure:
     Response Body:
         {
     "formattedData": [
@@ -904,10 +904,10 @@ API Name: LeaderBoard
     API URL: http://localhost:5000/api/leaderBoard/by-user
     API MEthod: GET
     API Description:
-    This endpoint retrieves the leaderboard information for a specific user. It returns a list of games along with the user's scores and the date they achieved those scores.
-    This endpoint retreives only the top 10 high scorers.
+        - This endpoint retrieves the leaderboard information for a specific user. It returns a list of games along with the user's scores and the date they achieved those scores.
+        - This endpoint retreives only the top 10 high scorers.
     Response:
-    This response provides a structured view of the user's performance across different games.
+        - This response provides a structured view of the user's performance across different games.
     Response Body:
     {
         "leaderboard": [
@@ -988,10 +988,11 @@ Game Analytics (popularity by Screen Time, popularity by times played, popularit
 ***NOTE: The following endpoints will provide data for  all the games  irrespective of their isActive Status.***
 API Name: Popularity By Screen Time
     API URL: http://localhost:5000/api/analytics/totlScreenTime
+    API Method: GET
     API Description:
-    This endpoint retrieves the total screen time for different games. It is useful to determine the popularity of the game by total screen time, allowing users to understand how much time has been spent on each game.
+        - This endpoint retrieves the total screen time for different games. It is useful to determine the popularity of the game by total screen time, allowing users to understand how much time has been spent on each game.
     Response:
-    The response will contain a JSON object with the following structure:
+        - The response will contain a JSON object with the following structure:
     Response Body:
     {
         "arrangedData": [
@@ -1008,6 +1009,7 @@ API Name: Popularity By Screen Time
 
 API Name : Popularity By Times played
     API URL :  http://localhost:5000/api/analytics/gameTimesPlayed
+    API Method: GET
     API Description:
         This endpoint retrieves the  time number of times a game has been played. It is useful to determine the popularity of the game by times played, allowing users to understand how many times each game has been played.
     Response:
@@ -1028,6 +1030,7 @@ API Name : Popularity By Times played
 
 API Name: Popularity By Reviews
     API URL:  http://localhost:5000/api/analytics/totalReviews
+    API Method: GET
     API Description: 
             This endpoint retrieves the   average reviews, number of reviews for the game. It is useful to determine the popularity of the game by reviews, allowing users to understand how many users have actually reviewd the game.
     Response:
@@ -1052,11 +1055,12 @@ API Name: Popularity By Reviews
 
 API Name: Game Last played
     API URL : http://localhost:5000/api/analytics/lastPlayed
+    API Method: GET
     API Description:
-    This endpoint fetches the last played date and time for each game,
-    allowing users to perform further actions based on this information.
+        - This endpoint fetches the last played date and time for each game,
+        - allowing users to perform further actions based on this information.
     Response:
-    The response will contain a JSON object with the following structure:
+        - The response will contain a JSON object with the following structure:
     Response Body:
     {
         "arrangedData": [
@@ -1072,6 +1076,33 @@ API Name: Game Last played
             }
         ]
     }
+
+API Name: Game Score analysis
+    API URL: http://localhost:5000/api/analytics/scoreAnalysis
+    API Method: GET
+    API Description:
+        - This endpoint retrieves each game's highest score, average score, and the difference between them, arranged in ascending order.
+        - The difference can help assess a game's difficulty — a smaller difference suggests the game is easier, while a larger         difference indicates it is more challenging.
+    Response:
+        The response will contain a JSON object with the following structure:
+    Response Body:
+    {
+        "arrangedData": [
+            {
+                "gameName": "harry",
+                "averageScore": 1550,
+                "highScore": 1500,
+                "difference": 50
+            },
+            {
+                "gameName": "pirates",
+                "averageScore": 2800,
+                "highScore": 5050,
+                "difference": 2250
+            }
+        ]
+    }
+    
 
 
 

@@ -151,26 +151,18 @@ const gameScoreAnalysis = async (req, res) => {
       return res.status(400).json({ message: " Data Error" });
     }
 
-    const formattedData = data
-      .filter(
-        (game) =>
-          game.gameName &&
-          Array.isArray(game.highScoreDetails) &&
-          game.highScoreDetails.length > 0
-      )
-      .map((game) => {
-        const topScore = game.highScoreDetails[0]; // assuming highest score is first
-        return {
-          gameName: game.gameName,
-          gameId: game.gameId,
-          gameHighScore: topScore.highScore,
-          achievedDate: new Date(topScore.timeStamp),
-        };
-      });
-    const arrangedData = formattedData.sort(
-      (a, b) => b.gameHighScore - a.gameHighScore
-    );
-
+    const scoreDiffs = data.map((game) => {
+      const maxScore = Math.max(
+        ...game.highScoreDetails.map((hs) => hs.highScore)
+      );
+      return {
+        gameName: game.gameName,
+        averageScore: game.averageScore,
+        highScore: maxScore,
+        difference: maxScore - game.averageScore,
+      };
+    });
+    const arrangedData = scoreDiffs.sort((a, b) => a.difference - b.difference);
     return res.status(200).json({ arrangedData });
   } catch (err) {
     return res.status(500).json({ message: "Error Fetching Data:", err });
