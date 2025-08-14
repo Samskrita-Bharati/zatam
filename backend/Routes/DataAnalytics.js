@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const { getNumberOfUsersByQuarter } = require("../Controllers/UserController")
+const { getNumberOfUsersByQuarter } = require("../Controllers/UserController");
+const { getNumberofGamesByQuarter } = require("../Controllers/GameController");
 
-
-router.get("/users-quarterly", getNumberOfUsersByQuarter);
+router.get("/users-quaterly", getNumberOfUsersByQuarter);
+router.get("/games-quaterly", getNumberofGamesByQuarter);
 
 module.exports = router;
