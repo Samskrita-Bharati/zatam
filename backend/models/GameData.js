@@ -5,8 +5,7 @@ class GameData {
     totalScreenTime = 0,
     averageTimePlayed = 0,
     lastPlayed = null,
-    rating = 0,
-    totalReviews = 0,
+    // rating and totalReviews removed
     highScoreDetails = [],
     scoreDetails = [],
     averageScore = 0,
@@ -17,8 +16,7 @@ class GameData {
     this.totalScreenTime = totalScreenTime;
     this.averageTimePlayed = averageTimePlayed;
     this.lastPlayed = lastPlayed;
-    this.rating = rating;
-    this.totalReviews = totalReviews;
+    // rating and totalReviews removed
     this.highScoreDetails = highScoreDetails;
     this.scoreDetails = scoreDetails;
     this.averageScore = averageScore;
@@ -31,17 +29,16 @@ class GameData {
    * @param {string} params.userId - User who played the game
    * @param {number} params.playTime - Duration played in seconds
    * @param {number} params.score - Score achieved in the session
-   * @param {number} params.rating - Rating given by user
-   * @param {number} params.reviewCount - How many reviews were added (0 or 1 typically)
-   * @param {string} params.lastPlayedDate - ISO timestamp of when played
-   * @param {boolean} params.isFavorite - is the game favorite to the user
+   * @param {number} [params.rating] - Rating given by user (optional)
+   * @param {string} [params.lastPlayedDate] - ISO timestamp of when played
+   * @param {boolean} [params.isFavorite] - is the game favorite to the user
    */
   updatePlayStats({
     userId,
     playTime,
     score,
     rating = null,
-    reviewCount = 0,
+    // reviewCount removed
     lastPlayedDate,
     isFavorite = false,
   }) {
@@ -54,13 +51,7 @@ class GameData {
     this.averageScore =
       (this.averageScore * (this.playCount - 1) + score) / this.playCount;
 
-    // Update average rating
-    if (rating !== null && reviewCount > 0 && typeof rating === "number") {
-      this.rating =
-        (this.rating * this.totalReviews + rating) /
-        (this.totalReviews + reviewCount);
-      this.totalReviews += reviewCount;
-    }
+    // Remove average rating update logic here
 
     // Always ensure only the highest score is stored
     if (
@@ -76,7 +67,7 @@ class GameData {
       ];
     }
 
-    // Conditionally pushing only relevant fields into scoreDetails
+    // Prepare scoreDetails entry, include rating if present
     const scoreEntry = {
       userId,
       score,
@@ -90,9 +81,7 @@ class GameData {
 
     if (typeof isFavorite === "boolean") {
       scoreEntry.isFavorite = isFavorite;
-      // this.isFavorite = isFavorite; // Optionally track global user preference
     }
-    // Append to all score sessions
 
     this.scoreDetails.push(scoreEntry);
 
@@ -100,6 +89,7 @@ class GameData {
   }
 
   toFirestore() {
+    // This will NOT include rating or totalReviews
     return { ...this };
   }
 }
