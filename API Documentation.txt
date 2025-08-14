@@ -984,7 +984,98 @@ API Name: LeaderBoard
         ]
     }
 
-Analytics
+Game Analytics (popularity by Screen Time, popularity by times played, popularity by reviews, game last played, game score analysis)
+***NOTE: The following endpoints will provide data for  all the games  irrespective of their isActive Status.***
+API Name: Popularity By Screen Time
+    API URL: http://localhost:5000/api/analytics/totlScreenTime
+    API Description:
+    This endpoint retrieves the total screen time for different games. It is useful to determine the popularity of the game by total screen time, allowing users to understand how much time has been spent on each game.
+    Response:
+    The response will contain a JSON object with the following structure:
+    Response Body:
+    {
+        "arrangedData": [
+            {
+                "gameName": "pirates",
+                "totalScreenTime": 4000
+            },
+            {
+                "gameName": "harry",
+                "totalScreenTime": 2100
+            }
+        ]
+    }
+
+API Name : Popularity By Times played
+    API URL :  http://localhost:5000/api/analytics/gameTimesPlayed
+    API Description:
+        This endpoint retrieves the  time number of times a game has been played. It is useful to determine the popularity of the game by times played, allowing users to understand how many times each game has been played.
+    Response:
+        The response will contain a JSON object with the following structure:
+    Response Body:
+    {
+        "arrangedData": [
+            {
+                "gameName": "pirates",
+                "timesPlayed": 4
+            },
+            {
+                "gameName": "harry",
+                "timesPlayed": 3
+            }
+        ]
+    }
+
+API Name: Popularity By Reviews
+    API URL:  http://localhost:5000/api/analytics/totalReviews
+    API Description: 
+            This endpoint retrieves the   average reviews, number of reviews for the game. It is useful to determine the popularity of the game by reviews, allowing users to understand how many users have actually reviewd the game.
+    Response:
+            The response will contain a JSON object with the following structure:
+    Response Body:
+    {
+        "arrangedData": [
+            {
+                "gameName": "pirates",
+                "gameId": "G_20250810_135240_179_514",
+                "averageRating": 3.5,
+                "totalRatings": 4
+            },
+            {
+                "gameName": "harry",
+                "gameId": "G_20250810_135259_168_347",
+                "averageRating": 3.5,
+                "totalRatings": 2
+            }
+        ]
+    }
+
+API Name: Game Last played
+    API URL : http://localhost:5000/api/analytics/lastPlayed
+    API Description:
+    This endpoint fetches the last played date and time for each game,
+    allowing users to perform further actions based on this information.
+    Response:
+    The response will contain a JSON object with the following structure:
+    Response Body:
+    {
+        "arrangedData": [
+            {
+                "gameName": "harry",
+                "gameId": "G_20250810_135259_168_347",
+                "lastPlayedDate": "2025-08-13T23:59:56.129Z"
+            },
+            {
+                "gameName": "pirates",
+                "gameId": "G_20250810_135240_179_514",
+                "lastPlayedDate": "2025-08-13T23:58:20.104Z"
+            }
+        ]
+    }
+
+
+
+
 
 
 

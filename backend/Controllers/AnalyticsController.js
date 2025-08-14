@@ -7,19 +7,24 @@ const gamesCollection = db.collection("games");
 
 const totalScreenTimeByGame = async (req, res) => {
   try {
+    // fetching all the game data
     const data = await fetchGamesDataWithNames();
 
     if (!Array.isArray(data)) {
       return res.status(400).json({ message: "Data Error" });
     }
 
+    // filtering the gamedata by game name instead of id
+    // this is because if the game is deleted from the database the game name becomes undefiend, filtering such games
     const filteredData = data
-      .filter((game) => game.gameName && game.totalScreenTime)
+      .filter((game) => game.gameName)
       .map((game) => ({
         gameName: game.gameName,
+        gameId: game.gameId,
         totalScreenTime: game.totalScreenTime,
       }));
 
+    // sorting the filterd data in  decending order
     const arrangedData = filteredData.sort(
       (a, b) => b.totalScreenTime - a.totalScreenTime
     );
@@ -43,6 +48,7 @@ const gameTimesPlayed = async (req, res) => {
       .filter((game) => game.gameName && game.playCount)
       .map((game) => ({
         gameName: game.gameName,
+        gameId: game.gameId,
         timesPlayed: game.playCount,
       }));
 
@@ -122,6 +128,7 @@ const gameLastPlayed = async (req, res) => {
       .filter((game) => game.gameName && game.lastPlayed)
       .map((game) => ({
         gameName: game.gameName,
+        gameId: game.gameId,
         lastPlayedDate: new Date(game.lastPlayed),
       }));
 
@@ -155,6 +162,7 @@ const gameScoreAnalysis = async (req, res) => {
         const topScore = game.highScoreDetails[0]; // assuming highest score is first
         return {
           gameName: game.gameName,
+          gameId: game.gameId,
           gameHighScore: topScore.highScore,
           achievedDate: new Date(topScore.timeStamp),
         };
