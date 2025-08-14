@@ -167,7 +167,6 @@ API Name: Reset Password
     "message": "Password has been reset successfully."
     }
 
-
 "Games (Adding/editing/updating active status)"
 API Name: Add New Games
     API URL : http://localhost:5000/api/games/addNew
@@ -1102,7 +1101,76 @@ API Name: Game Score analysis
             }
         ]
     }
-    
+
+Data Analytics(Quaterly User data, Quaterly games Data)
+API Name: Quaterly User Data
+    API URL: http://localhost:5000/api/data-analytics/users-quaterly
+    API Method: GET
+    API Description:
+        - This endpoint retrieves the total number of users, broken down by quarter.
+        - This endpoint enables the users to track the application performance with regards to the user.
+    Response:
+        - The response will contain a JSON object with the following structure:
+    Response Body:
+    [
+        {
+            "year": 2024,
+            "userData": [
+                {
+                    "Q2": 1
+                },
+                {
+                    "Q3": 1
+                }
+            ]
+        },
+        {
+            "year": 2025,
+            "userData": [
+                {
+                    "Q1": 1
+                },
+                {
+                    "Q3": 1
+                }
+            ]
+        }
+    ]
+
+API Name: Quaterly Games Data
+    API URL : http://localhost:5000/api/data-analytics/games-quaterly
+    API Method: GET
+    API Description:
+    - This endpoint retrieves the total number of users, broken down by quarter.
+    - This endpoint enables the users to track the application performance with regards to the user.
+    Response:
+    - The response will contain a JSON object with the following structure:
+    Response Body:
+    [
+        {
+            "year": 2024,
+            "gameData": [
+                {
+                    "Q3": 1
+                }
+            ]
+        },
+        {
+            "year": 2025,
+            "gameData": [
+                {
+                    "Q1": 1
+                },
+                {
+                    "Q3": 1
+                }
+            ]
+        }
+    ]
+
+
+
+
 
 
 
