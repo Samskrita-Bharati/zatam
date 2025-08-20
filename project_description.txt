@@ -1,0 +1,12 @@
+Project Title: Zatam Web Application
+
+Project Owner: Samskrita Bharati Canada
+
+Project Overview:
+The Zatam Web Application is designed to promote interactive learning and support new Sanskrit learners. It provides an engaging starting point for the learning journey, complemented by recreational games that make practicing Sanskrit enjoyable for all users.
+
+As contributions from multiple developers continue to grow, there arose a need for a centralized platform to track development team activities and manage user scores. Additionally, there was a requirement for an independent application that is not tied to any single game, but instead serves as a unified hub to host and integrate all contributions seamlessly.
+
+Project Description:
+The platform enables games to function as individual components, whether they are full-stack applications hosted independently or applications hosted on external platforms like GitHub. This architecture ensures scalability, modularity, and ease of integration, allowing all contributions to coexist within a single, cohesive system.
+

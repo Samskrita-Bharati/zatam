@@ -51,8 +51,6 @@ class GameData {
     this.averageScore =
       (this.averageScore * (this.playCount - 1) + score) / this.playCount;
 
-    // Remove average rating update logic here
-
     // Always ensure only the highest score is stored
     if (
       this.highScoreDetails.length === 0 ||
